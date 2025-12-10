@@ -36,7 +36,7 @@ export const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLoginClick, onLogo
     { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
     { name: 'Services', path: '/services' },
-    { name: 'Skills', path: '/skills' },
+    { name: 'Courses', path: '/skills' },
     { name: 'Resources', path: '/resources' },
     { name: 'Blog', path: '/blog' },
     { name: 'Contact', path: '/contact' },

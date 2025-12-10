@@ -29,7 +29,8 @@ export const COURSES: Course[] = [
     ],
     lastUpdated: "October 2025",
     language: "English",
-    prerequisites: ["No programming experience needed", "A computer with internet access"]
+    prerequisites: ["No programming experience needed", "A computer with internet access"],
+    previewVideoId: "nu_pCVPKzTk"
   },
   {
     id: '2',
@@ -58,7 +59,8 @@ export const COURSES: Course[] = [
     ],
     lastUpdated: "September 2025",
     language: "English",
-    prerequisites: ["Basic understanding of programming concepts", "High school math knowledge"]
+    prerequisites: ["Basic understanding of programming concepts", "High school math knowledge"],
+    previewVideoId: "ua-CiDNNj30"
   },
   {
     id: '3',
@@ -87,7 +89,8 @@ export const COURSES: Course[] = [
     ],
     lastUpdated: "November 2025",
     language: "English",
-    prerequisites: ["No design experience needed", "Interest in creative work"]
+    prerequisites: ["No design experience needed", "Interest in creative work"],
+    previewVideoId: "c9Wg6Cb_YlU"
   },
   {
     id: '4',
@@ -116,7 +119,8 @@ export const COURSES: Course[] = [
     ],
     lastUpdated: "December 2025",
     language: "English",
-    prerequisites: ["Basic knowledge of IT infrastructure", "Networking fundamentals"]
+    prerequisites: ["Basic knowledge of IT infrastructure", "Networking fundamentals"],
+    previewVideoId: "3hLmDS179YE"
   },
   {
     id: '5',
@@ -145,7 +149,8 @@ export const COURSES: Course[] = [
     ],
     lastUpdated: "October 2025",
     language: "English",
-    prerequisites: ["Solid understanding of JavaScript (ES6)", "HTML & CSS basics"]
+    prerequisites: ["Solid understanding of JavaScript (ES6)", "HTML & CSS basics"],
+    previewVideoId: "Tn6-PIqc4UM"
   },
   {
     id: '6',
@@ -174,7 +179,8 @@ export const COURSES: Course[] = [
     ],
     lastUpdated: "August 2025",
     language: "English",
-    prerequisites: ["Basic IT skills", "Familiarity with operating systems (Linux preferred)"]
+    prerequisites: ["Basic IT skills", "Familiarity with operating systems (Linux preferred)"],
+    previewVideoId: "xlwdCFE7FXA"
   },
   {
     id: '7',
@@ -203,7 +209,8 @@ export const COURSES: Course[] = [
     ],
     lastUpdated: "January 2025",
     language: "English",
-    prerequisites: ["No prior AI knowledge required"]
+    prerequisites: ["No prior AI knowledge required"],
+    previewVideoId: "G2fqAlgmoPo"
   },
   {
     id: '8',

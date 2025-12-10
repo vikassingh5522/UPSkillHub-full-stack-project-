@@ -17,6 +17,7 @@ export interface Course {
   lastUpdated?: string;
   language?: string;
   prerequisites?: string[];
+  previewVideoId?: string;
 }
 
 export interface User {
