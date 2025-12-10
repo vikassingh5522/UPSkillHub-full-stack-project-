@@ -1,0 +1,353 @@
+# Implementation Plan
+
+- [ ] 1. Set up project foundation and data models
+  - [ ] 1.1 Create TypeScript interfaces for all data models
+    - Define Course, Module, Lecture, User, Admin, Progress interfaces in `types.ts`
+    - Define Q&A, Review, Note, Bookmark, Certificate, Announcement interfaces
+    - _Requirements: 7.1, 7.2_
+  - [ ] 1.2 Write property test for data model serialization round-trip
+    - **Property 1: Course Data Round-Trip Consistency**
+    - **Validates: Requirements 7.5, 7.6**
+  - [ ] 1.3 Create data generators for test fixtures
+    - Create course generator with nested modules and lectures
+    - Create user generator with enrollment states
+    - _Requirements: 7.1, 7.2, 7.3_
+  - [ ] 1.4 Write property test for hierarchical data integrity
+    - **Property 2: Hierarchical Data Integrity**
+    - **Validates: Requirements 7.1, 7.2**
+
+- [ ] 2. Implement context providers and state management
+  - [ ] 2.1 Create AuthContext for user and admin authentication
+    - Implement login, logout, register functions
+    - Add admin authentication with role checking
+    - Persist auth state to localStorage
+    - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
+  - [ ] 2.2 Create CourseContext for course data operations
+    - Implement CRUD operations for courses
+    - Implement module and lecture management
+    - Add reordering functionality for modules and lectures
+    - _Requirements: 2.1, 2.3, 2.6, 2.7, 3.1, 3.4, 3.7, 3.8_
+  - [ ] 2.3 Write property test for course CRUD operations
+    - **Property 3: Course CRUD Operations Consistency**
+    - **Validates: Requirements 2.3, 2.6, 2.7**
+  - [ ] 2.4 Write property test for lecture CRUD operations
+    - **Property 5: Lecture CRUD Operations Consistency**
+    - **Validates: Requirements 3.4, 3.7**
+  - [ ] 2.5 Write property test for module cascade deletion
+    - **Property 6: Module Cascade Deletion**
+    - **Validates: Requirements 3.8**
+  - [ ] 2.6 Write property tests for reordering operations
+    - **Property 7: Lecture Reordering Persistence**
+    - **Property 8: Module Reordering Persistence**
+    - **Validates: Requirements 3.5, 3.6**
+  - [ ] 2.7 Create ProgressContext for student progress tracking
+    - Implement lecture completion tracking
+    - Calculate course progress percentage
+    - Persist watch positions
+    - _Requirements: 4.3, 5.1, 5.2, 5.3, 5.4, 5.5_
+  - [ ] 2.8 Write property test for progress calculation
+    - **Property 9: Progress Calculation Accuracy**
+    - **Validates: Requirements 4.3, 5.2, 5.5**
+  - [ ] 2.9 Write property test for progress persistence
+    - **Property 10: Progress Persistence Across Navigation**
+    - **Validates: Requirements 4.5, 5.3**
+
+- [ ] 3. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 4. Implement admin authentication and dashboard
+  - [ ] 4.1 Create AdminLogin page component
+    - Build login form with email and password fields
+    - Implement form validation and error display
+    - Handle authentication and redirect to dashboard
+    - _Requirements: 1.1, 1.2, 1.3_
+  - [ ] 4.2 Create AdminDashboard page component
+    - Display quick stats (total courses, enrollments, revenue)
+    - Add navigation to course management and analytics
+    - Implement logout functionality
+    - _Requirements: 1.4, 1.5, 15.1_
+  - [ ] 4.3 Create AdminLayout wrapper with route protection
+    - Implement admin route guard checking auth state
+    - Add admin navigation sidebar
+    - _Requirements: 1.4_
+
+- [ ] 5. Implement admin course management
+  - [ ] 5.1 Create AdminCourses page with course list
+    - Display all courses with title, instructor, status, actions
+    - Add "Add New Course" button
+    - Implement delete with confirmation
+    - _Requirements: 2.1, 2.7_
+  - [ ] 5.2 Create CourseForm component for create/edit
+    - Build form with all required fields
+    - Implement validation for required fields
+    - Handle create and update submissions
+    - _Requirements: 2.2, 2.3, 2.4, 2.5, 2.6_
+  - [ ] 5.3 Write property test for course form validation
+    - **Property 4: Course Form Validation**
+    - **Validates: Requirements 2.4**
+
+- [ ] 6. Implement admin lecture management
+  - [ ] 6.1 Create AdminLectures page for module/lecture management
+    - Display modules and lectures in hierarchical view
+    - Add "Add Module" and "Add Lecture" buttons
+    - _Requirements: 3.1, 3.2, 3.3_
+  - [ ] 6.2 Create ModuleEditor component with drag-drop reordering
+    - Implement module title editing
+    - Add drag-drop for module reordering
+    - Handle module deletion with cascade
+    - _Requirements: 3.2, 3.6, 3.8_
+  - [ ] 6.3 Create LectureForm component for create/edit
+    - Build form with title, video URL, duration, description
+    - Implement validation and submission
+    - _Requirements: 3.3, 3.4_
+  - [ ] 6.4 Implement lecture drag-drop reordering within modules
+    - Add drag-drop for lecture reordering
+    - Persist new order on drop
+    - _Requirements: 3.5_
+
+- [ ] 7. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 8. Implement course player interface
+  - [ ] 8.1 Create CoursePlayer page component
+    - Build main layout with video area and sidebar
+    - Implement enrollment check and redirect for non-enrolled
+    - _Requirements: 4.1, 4.6_
+  - [ ] 8.2 Write property test for enrollment access control
+    - **Property 11: Enrollment Access Control**
+    - **Validates: Requirements 4.1, 4.6**
+  - [ ] 8.3 Create VideoPlayer component with custom controls
+    - Implement play/pause, volume, fullscreen controls
+    - Add playback speed selector (0.5x to 2x)
+    - Implement keyboard shortcuts (space, arrows, M)
+    - Add progress bar with seek functionality
+    - _Requirements: 16.1, 16.2, 16.4, 16.5_
+  - [ ] 8.4 Write property test for playback speed adjustment
+    - **Property 27: Video Playback Speed Adjustment**
+    - **Validates: Requirements 16.2**
+  - [ ] 8.5 Create LectureSidebar component
+    - Display modules and lectures with completion icons
+    - Implement lecture selection and navigation
+    - Show current lecture highlight
+    - _Requirements: 4.2, 5.1_
+  - [ ] 8.6 Implement lecture completion tracking
+    - Mark lecture complete when video ends
+    - Update progress percentage on completion
+    - Save watch position on navigation
+    - _Requirements: 4.3, 4.4, 4.5_
+
+- [ ] 9. Implement student dashboard
+  - [ ] 9.1 Create StudentDashboard page component
+    - Display enrolled courses with thumbnails and progress
+    - Show empty state with browse link for no enrollments
+    - _Requirements: 8.1, 8.2, 8.3_
+  - [ ] 9.2 Implement course status filtering
+    - Add filter tabs (All, In Progress, Completed, Not Started)
+    - Filter courses based on progress data
+    - _Requirements: 8.4_
+  - [ ] 9.3 Write property test for enrolled courses filtering
+    - **Property 26: Enrolled Courses Filter Accuracy**
+    - **Validates: Requirements 8.4**
+  - [ ] 9.4 Create ProgressRing component for visual progress
+    - Display circular progress indicator
+    - Show percentage in center
+    - _Requirements: 5.4_
+
+- [ ] 10. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 11. Implement Q&A system
+  - [ ] 11.1 Create QASection component for course player
+    - Display questions list sorted by most recent
+    - Add new question form
+    - _Requirements: 6.1, 6.2_
+  - [ ] 11.2 Implement question validation and submission
+    - Validate non-empty question content
+    - Associate question with current lecture
+    - Add timestamp and author info
+    - _Requirements: 6.2, 6.3_
+  - [ ] 11.3 Write property test for Q&A question validation
+    - **Property 12: Q&A Question Validation**
+    - **Validates: Requirements 6.3**
+  - [ ] 11.4 Create AnswerThread component for replies
+    - Display answers with author and timestamp
+    - Add reply form
+    - _Requirements: 6.4_
+  - [ ] 11.5 Implement Q&A search functionality
+    - Add search input field
+    - Filter questions by title and body content
+    - _Requirements: 6.5_
+  - [ ] 11.6 Write property test for Q&A search filtering
+    - **Property 13: Q&A Search Filtering**
+    - **Validates: Requirements 6.5**
+  - [ ] 11.7 Implement upvote functionality
+    - Add upvote button to questions and answers
+    - Track voters to prevent duplicate votes
+    - _Requirements: 6.6_
+  - [ ] 11.8 Write property test for upvote consistency
+    - **Property 14: Q&A Upvote Consistency**
+    - **Validates: Requirements 6.6**
+
+- [ ] 12. Implement course reviews and ratings
+  - [ ] 12.1 Create ReviewSection component for course detail page
+    - Display reviews sorted by most recent
+    - Show average rating with star display
+    - Add pagination for reviews
+    - _Requirements: 9.4, 9.5, 9.6_
+  - [ ] 12.2 Create ReviewForm component with star rating
+    - Build star rating input (1-5)
+    - Add optional text feedback field
+    - Validate rating is provided
+    - _Requirements: 9.2, 9.3_
+  - [ ] 12.3 Write property test for review rating validation
+    - **Property 15: Review Rating Validation**
+    - **Validates: Requirements 9.3**
+  - [ ] 12.4 Write property test for average rating calculation
+    - **Property 16: Average Rating Calculation**
+    - **Validates: Requirements 9.5**
+  - [ ] 12.5 Implement review eligibility check
+    - Enable review form only when progress >= 50%
+    - Show progress requirement message otherwise
+    - _Requirements: 9.1_
+  - [ ] 12.6 Write property test for review eligibility threshold
+    - **Property 17: Review Eligibility Threshold**
+    - **Validates: Requirements 9.1**
+
+- [ ] 13. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 14. Implement course search and filtering
+  - [ ] 14.1 Create SearchResults page component
+    - Display search results with course cards
+    - Show result count and search term
+    - _Requirements: 13.1_
+  - [ ] 14.2 Implement search functionality
+    - Search across title, description, instructor name
+    - Case-insensitive matching
+    - _Requirements: 13.1_
+  - [ ] 14.3 Write property test for course search matching
+    - **Property 18: Course Search Matching**
+    - **Validates: Requirements 13.1**
+  - [ ] 14.4 Create SearchFilters component
+    - Add category filter dropdown
+    - Add level filter (Beginner, Intermediate, Advanced)
+    - Add price range slider
+    - _Requirements: 13.2, 13.3, 13.4_
+  - [ ] 14.5 Implement combined filter logic
+    - Apply all filters with AND logic
+    - Update results on filter change
+    - _Requirements: 13.6_
+  - [ ] 14.6 Write property test for filter correctness
+    - **Property 19: Course Filter Correctness**
+    - **Validates: Requirements 13.2, 13.3, 13.4, 13.6**
+  - [ ] 14.7 Implement sort functionality
+    - Add sort dropdown (rating, popularity, newest, price)
+    - Apply selected sort order
+    - _Requirements: 13.5_
+  - [ ] 14.8 Write property test for sort ordering
+    - **Property 20: Course Sort Ordering**
+    - **Validates: Requirements 13.5**
+
+- [ ] 15. Implement wishlist functionality
+  - [ ] 15.1 Add wishlist button to CourseCard and CourseDetail
+    - Toggle wishlist state on click
+    - Show filled/outline heart icon based on state
+    - _Requirements: 14.1_
+  - [ ] 15.2 Create WishlistPage component
+    - Display all wishlisted courses
+    - Show current prices with sale indicators
+    - Add remove from wishlist option
+    - _Requirements: 14.2, 14.3, 14.4_
+  - [ ] 15.3 Write property test for wishlist operations
+    - **Property 21: Wishlist Operations Consistency**
+    - **Validates: Requirements 14.1, 14.3**
+
+- [ ] 16. Implement notes and bookmarks
+  - [ ] 16.1 Create NotesPanel component for course player
+    - Display notes organized by lecture
+    - Add note creation form with optional timestamp
+    - _Requirements: 10.2, 10.3_
+  - [ ] 16.2 Write property test for notes association
+    - **Property 23: Notes Association Integrity**
+    - **Validates: Requirements 10.2, 10.3**
+  - [ ] 16.3 Implement bookmark functionality
+    - Add bookmark button to video player
+    - Save current timestamp on bookmark
+    - _Requirements: 10.1_
+  - [ ] 16.4 Create BookmarkList component
+    - Display bookmarks with timestamps
+    - Navigate to lecture and seek on click
+    - Add delete bookmark option
+    - _Requirements: 10.4, 10.5_
+  - [ ] 16.5 Write property test for bookmark timestamp accuracy
+    - **Property 22: Bookmark Timestamp Accuracy**
+    - **Validates: Requirements 10.1, 10.4**
+
+- [ ] 17. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 18. Implement certificates
+  - [ ] 18.1 Create certificate generation logic
+    - Generate certificate when course 100% complete
+    - Create unique certificate ID
+    - Store certificate data
+    - _Requirements: 11.1, 11.2_
+  - [ ] 18.2 Write property test for certificate generation
+    - **Property 24: Certificate Generation Trigger**
+    - **Validates: Requirements 11.1, 11.2**
+  - [ ] 18.3 Create CertificateView component
+    - Display certificate with student name, course, date
+    - Add download as PDF functionality
+    - Generate shareable verification link
+    - _Requirements: 11.3, 11.4_
+  - [ ] 18.4 Create CertificatesPage for viewing all certificates
+    - List all earned certificates
+    - Link to individual certificate view
+    - _Requirements: 11.3_
+
+- [ ] 19. Implement announcements
+  - [ ] 19.1 Create announcement management in admin
+    - Add announcement form for courses
+    - Display existing announcements
+    - _Requirements: 12.1, 12.2_
+  - [ ] 19.2 Create AnnouncementBanner component
+    - Display unread announcements in course player
+    - Show notification indicator for unread
+    - _Requirements: 12.3_
+  - [ ] 19.3 Implement read status tracking
+    - Mark announcement as read when viewed
+    - Track read status per user
+    - _Requirements: 12.4_
+  - [ ] 19.4 Write property test for announcement read status
+    - **Property 25: Announcement Read Status Tracking**
+    - **Validates: Requirements 12.4**
+
+- [ ] 20. Implement admin analytics dashboard
+  - [ ] 20.1 Create AdminAnalytics page component
+    - Display total enrollments, revenue, active users
+    - Show course-level analytics
+    - _Requirements: 15.1, 15.2_
+  - [ ] 20.2 Implement date range filtering
+    - Add date range picker
+    - Filter analytics data by selected period
+    - _Requirements: 15.3_
+  - [ ] 20.3 Create analytics charts and visualizations
+    - Add enrollment trends chart
+    - Display completion rate metrics
+    - Show average watch time
+    - _Requirements: 15.4_
+
+- [ ] 21. Update routing and navigation
+  - [ ] 21.1 Add new routes to App.tsx
+    - Add admin routes with protection
+    - Add student dashboard routes
+    - Add search and wishlist routes
+    - _Requirements: All navigation requirements_
+  - [ ] 21.2 Update Navbar with new navigation items
+    - Add My Courses link for logged-in users
+    - Add Wishlist link
+    - Add Admin link for admin users
+    - _Requirements: 8.1, 14.2_
+
+- [ ] 22. Final Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
