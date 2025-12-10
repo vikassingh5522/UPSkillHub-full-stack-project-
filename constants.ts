@@ -28,7 +28,8 @@ export const COURSES: Course[] = [
       { title: "Backend Development", items: ["Node.js Environment", "Express Server", "RESTful APIs"] }
     ],
     lastUpdated: "October 2025",
-    language: "English"
+    language: "English",
+    prerequisites: ["No programming experience needed", "A computer with internet access"]
   },
   {
     id: '2',
@@ -56,7 +57,8 @@ export const COURSES: Course[] = [
       { title: "Machine Learning", items: ["Linear Regression", "Logistic Regression", "K-Nearest Neighbors"] }
     ],
     lastUpdated: "September 2025",
-    language: "English"
+    language: "English",
+    prerequisites: ["Basic understanding of programming concepts", "High school math knowledge"]
   },
   {
     id: '3',
@@ -84,7 +86,8 @@ export const COURSES: Course[] = [
       { title: "Career in Design", items: ["Portfolio Building", "Freelancing", "Interview Prep"] }
     ],
     lastUpdated: "November 2025",
-    language: "English"
+    language: "English",
+    prerequisites: ["No design experience needed", "Interest in creative work"]
   },
   {
     id: '4',
@@ -112,7 +115,8 @@ export const COURSES: Course[] = [
       { title: "Serverless & Application Services", items: ["Lambda", "API Gateway", "SQS & SNS"] }
     ],
     lastUpdated: "December 2025",
-    language: "English"
+    language: "English",
+    prerequisites: ["Basic knowledge of IT infrastructure", "Networking fundamentals"]
   },
   {
     id: '5',
@@ -140,7 +144,8 @@ export const COURSES: Course[] = [
       { title: "TypeScript Integration", items: ["Interfaces", "Generics", "Typing Props & State"] }
     ],
     lastUpdated: "October 2025",
-    language: "English"
+    language: "English",
+    prerequisites: ["Solid understanding of JavaScript (ES6)", "HTML & CSS basics"]
   },
   {
     id: '6',
@@ -168,7 +173,8 @@ export const COURSES: Course[] = [
       { title: "Post Exploitation", items: ["Privilege Escalation", "Backdoors", "Reporting"] }
     ],
     lastUpdated: "August 2025",
-    language: "English"
+    language: "English",
+    prerequisites: ["Basic IT skills", "Familiarity with operating systems (Linux preferred)"]
   },
   {
     id: '7',
@@ -196,7 +202,8 @@ export const COURSES: Course[] = [
       { title: "Future of AI", items: ["Ethics", "Societal Impact", "Upcoming Trends"] }
     ],
     lastUpdated: "January 2025",
-    language: "English"
+    language: "English",
+    prerequisites: ["No prior AI knowledge required"]
   },
   {
     id: '8',
@@ -224,7 +231,8 @@ export const COURSES: Course[] = [
       { title: "Exam Prep", items: ["Mock Exams", "Tips & Tricks", "Application Process"] }
     ],
     lastUpdated: "November 2025",
-    language: "English"
+    language: "English",
+    prerequisites: ["Secondary degree (high school diploma, associate's degree or the global equivalent)", "7,500 hours leading and directing projects"]
   },
   {
     id: '9',
@@ -252,7 +260,8 @@ export const COURSES: Course[] = [
       { title: "Automation", items: ["Sensor Integration", "Control Logic", "Autonomous Navigation"] }
     ],
     lastUpdated: "January 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '10',
@@ -280,7 +289,8 @@ export const COURSES: Course[] = [
       { title: "Real-world Apps", items: ["Game AI", "Engineering Design", "Financial Modeling"] }
     ],
     lastUpdated: "December 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '11',
@@ -308,7 +318,8 @@ export const COURSES: Course[] = [
       { title: "Future Outlook", items: ["Quantum Advantage", "Post-Quantum Cryptography", "Timeline"] }
     ],
     lastUpdated: "February 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '12',
@@ -336,7 +347,8 @@ export const COURSES: Course[] = [
       { title: "Full Stack DApp", items: ["Connecting Frontend", "Wallet Integration", "IPFS"] }
     ],
     lastUpdated: "January 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '13',
@@ -346,7 +358,7 @@ export const COURSES: Course[] = [
     students: 950,
     price: 149.99,
     category: 'Robotics',
-    image: 'https://images.unsplash.com/photo-1535378437327-1e5491176b6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     duration: '45 hours',
     level: 'Advanced',
     description: "Master the Robot Operating System (ROS2), the industry standard for robotics software. Learn to create complex robotic systems with perception, navigation, and manipulation capabilities.",
@@ -364,7 +376,8 @@ export const COURSES: Course[] = [
       { title: "Computer Vision", items: ["OpenCV with ROS", "Object Detection", "Visual Servoing"] }
     ],
     lastUpdated: "November 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '14',
@@ -392,7 +405,8 @@ export const COURSES: Course[] = [
       { title: "Building Agents", items: ["Tools", "Reasoning", "ReAct Pattern"] }
     ],
     lastUpdated: "March 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '15',
@@ -420,7 +434,8 @@ export const COURSES: Course[] = [
       { title: "Edge Computing", items: ["Running AI on Edge", "Power Optimization", "OTA Updates"] }
     ],
     lastUpdated: "January 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '16',
@@ -448,7 +463,8 @@ export const COURSES: Course[] = [
       { title: "Concurrency", items: ["Threads", "Channels", "Async/Await"] }
     ],
     lastUpdated: "February 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '17',
@@ -476,7 +492,8 @@ export const COURSES: Course[] = [
       { title: "Analytics", items: ["Tracking Conversions", "User Behavior", "Reporting"] }
     ],
     lastUpdated: "December 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '18',
@@ -504,7 +521,8 @@ export const COURSES: Course[] = [
       { title: "Polish & Publish", items: ["Particle Effects", "Audio", "Build Settings"] }
     ],
     lastUpdated: "January 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '19',
@@ -532,7 +550,8 @@ export const COURSES: Course[] = [
       { title: "Security", items: ["IAM", "Security Command Center", "Encryption"] }
     ],
     lastUpdated: "February 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '20',
@@ -560,7 +579,8 @@ export const COURSES: Course[] = [
       { title: "Ops Security", items: ["Incident Management", "Disaster Recovery", "Forensics"] }
     ],
     lastUpdated: "January 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '21',
@@ -588,7 +608,8 @@ export const COURSES: Course[] = [
       { title: "Advanced", items: ["Model-Based RL", "Inverse RL", "Multi-Agent RL"] }
     ],
     lastUpdated: "February 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '22',
@@ -616,7 +637,8 @@ export const COURSES: Course[] = [
       { title: "CI/CD", items: ["Pipeline Syntax", "Automated Testing", "Blue/Green Deployment"] }
     ],
     lastUpdated: "March 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '23',
@@ -644,7 +666,8 @@ export const COURSES: Course[] = [
       { title: "Applications", items: ["Face Recognition", "License Plate Reading", "Gesture Control"] }
     ],
     lastUpdated: "January 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '24',
@@ -672,7 +695,8 @@ export const COURSES: Course[] = [
       { title: "Advanced", items: ["Context Package", "Reflection", "Generics"] }
     ],
     lastUpdated: "October 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '25',
@@ -682,7 +706,7 @@ export const COURSES: Course[] = [
     students: 900,
     price: 199.99,
     category: 'Robotics',
-    image: 'https://images.unsplash.com/photo-1508614589041-895b8c9d7ef5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1527977966376-1c8408f9f108?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     duration: '30 hours',
     level: 'Advanced',
     description: "Take your coding to the skies. Learn to program autonomous drones using Python and DroneKit. Cover flight dynamics, mission planning, and computer vision from the air.",
@@ -700,7 +724,8 @@ export const COURSES: Course[] = [
       { title: "Advanced", items: ["Obstacle Avoidance", "Swarm Control", "Visual Odometry"] }
     ],
     lastUpdated: "December 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '26',
@@ -728,7 +753,8 @@ export const COURSES: Course[] = [
       { title: "Project", items: ["Building a VR Escape Room", "Publishing to Store"] }
     ],
     lastUpdated: "February 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '27',
@@ -756,7 +782,8 @@ export const COURSES: Course[] = [
       { title: "Tools", items: ["BLAST", "Biopython", "PyMOL"] }
     ],
     lastUpdated: "January 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '28',
@@ -784,7 +811,8 @@ export const COURSES: Course[] = [
       { title: "Vision", items: ["Person Detection", "Camera Modules", "Optimization"] }
     ],
     lastUpdated: "March 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '29',
@@ -812,7 +840,8 @@ export const COURSES: Course[] = [
       { title: "Hugging Face", items: ["Datasets Library", "Trainers", "Inference API"] }
     ],
     lastUpdated: "January 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   },
   {
     id: '30',
@@ -840,62 +869,73 @@ export const COURSES: Course[] = [
       { title: "Industry Impact", items: ["Industry 4.0", "Healthcare", "Transportation"] }
     ],
     lastUpdated: "October 2025",
-    language: "English"
+    language: "English",
+    prerequisites: []
   }
 ];
 
 export const SERVICES: ServiceItem[] = [
-  {
-    title: 'Skill-Based Courses',
-    description: 'Structured learning paths designed by industry experts to take you from novice to pro.',
-    icon: 'BookOpen'
-  },
-  {
-    title: 'Live Mentorship',
-    description: 'Get one-on-one guidance from senior professionals to clear doubts and plan your career.',
-    icon: 'Users'
-  },
-  {
-    title: 'Global Certifications',
-    description: 'Earn recognized certificates upon completion to showcase your skills on LinkedIn.',
-    icon: 'Award'
-  },
-  {
-    title: 'Corporate Training',
-    description: 'Customized training programs for companies looking to upskill their workforce.',
-    icon: 'Briefcase'
-  }
+    {
+        title: "Expert Mentorship",
+        description: "Get 1-on-1 guidance from industry veterans who have worked at top tech companies like Google, Amazon, and Microsoft.",
+        icon: "Users"
+    },
+    {
+        title: "Career Guidance",
+        description: "Comprehensive support including resume reviews, mock interviews, and personalized career path planning.",
+        icon: "Briefcase"
+    },
+    {
+        title: "Certification",
+        description: "Earn industry-recognized certificates upon completion of courses to validate your skills to employers.",
+        icon: "Award"
+    },
+    {
+        title: "Structured Curriculum",
+        description: "Follow carefully designed learning paths that take you from beginner to expert in your chosen field.",
+        icon: "BookOpen"
+    }
 ];
 
 export const BLOG_POSTS: BlogPost[] = [
-  {
-    id: '1',
-    title: 'Top 10 Technologies to Learn in 2025',
-    excerpt: 'Discover the most in-demand tech skills that are shaping the future of the industry, from Generative AI to Quantum Computing.',
-    date: 'Oct 12, 2025',
-    author: 'Alex Rivera',
-    image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    category: 'Career',
-    link: 'https://www.forbes.com/sites/bernardmarr/2023/10/11/the-top-10-tech-trends-for-2024-everyone-must-be-ready-for/'
-  },
-  {
-    id: '2',
-    title: 'How to Stay Motivated When Learning to Code in 2025',
-    excerpt: 'Learning to code is a marathon. Here are 5 proven strategies to maintain your momentum and avoid burnout in the fast-paced tech world.',
-    date: 'Nov 05, 2025',
-    author: 'Sarah Jenkins',
-    image: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    category: 'Motivation',
-    link: 'https://www.freecodecamp.org/news/how-to-stay-motivated-learning-to-code/'
-  },
-  {
-    id: '3',
-    title: 'The Rise of AI in Everyday Software: 2025 Outlook',
-    excerpt: 'From copilot coding to AI-driven design, understand how Artificial Intelligence is being integrated into the tools we use daily.',
-    date: 'Nov 20, 2025',
-    author: 'Dr. Alan Grant',
-    image: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    category: 'Technology',
-    link: 'https://en.wikipedia.org/wiki/Artificial_intelligence'
-  }
+    {
+        id: '1',
+        title: 'Top 10 Tech Skills to Master in 2025',
+        excerpt: 'The tech landscape is evolving rapidly. Here are the most in-demand skills you need to stay competitive in the job market.',
+        date: 'March 15, 2025',
+        author: 'Alex Johnson',
+        image: 'https://images.unsplash.com/photo-1504384308090-c54be3855833?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        category: 'Career',
+        link: '#'
+    },
+    {
+        id: '2',
+        title: 'The Future of AI in Software Development',
+        excerpt: 'How generative AI is changing the way we write code, debug applications, and architect systems.',
+        date: 'March 10, 2025',
+        author: 'Dr. Emily Chen',
+        image: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        category: 'AI',
+        link: '#'
+    },
+    {
+        id: '3',
+        title: 'Breaking into Cybersecurity: A Beginner\'s Guide',
+        excerpt: 'Interested in a career in cybersecurity? Learn about the different roles, certifications, and skills required to get started.',
+        date: 'March 5, 2025',
+        author: 'Michael Smith',
+        image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        category: 'Cybersecurity',
+        link: '#'
+    },
+    {
+        id: '4',
+        title: 'Why Soft Skills Matter for Developers',
+        excerpt: 'Technical skills get you the interview, but soft skills get you the job. Learn how to improve your communication and teamwork.',
+        date: 'February 28, 2025',
+        author: 'Sarah Jenkins',
+        image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        category: 'Soft Skills',
+        link: '#'
+    }
 ];

@@ -16,6 +16,7 @@ export interface Course {
   syllabus?: { title: string; items: string[] }[];
   lastUpdated?: string;
   language?: string;
+  prerequisites?: string[];
 }
 
 export interface User {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CourseCard } from '../components/CourseCard';
 import { COURSES } from '../constants';
 import { Course, Category } from '../types';
-import { Search, SlidersHorizontal, TrendingUp, Code, Database, Lock, X, Filter } from 'lucide-react';
+import { Search, TrendingUp, Code, Database, Lock, X, Filter } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 
 interface SkillsProps {
@@ -22,13 +22,24 @@ export const Skills: React.FC<SkillsProps> = ({ onEnroll }) => {
   const categories: (Category | 'All')[] = ['All', 'Development', 'Data Science', 'AI', 'Robotics', 'Future Tech', 'Design', 'Cloud', 'Cybersecurity', 'Business', 'Marketing'];
 
   const filteredCourses = COURSES.filter(course => {
-    const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const term = searchTerm.toLowerCase().trim();
     const matchesCategory = selectedCategory === 'All' || course.category === selectedCategory;
     const matchesPrice = priceFilter === 'All' 
       ? true 
       : priceFilter === 'Free' 
         ? course.price === 0 
         : course.price > 0;
+
+    if (!term) {
+        return matchesCategory && matchesPrice;
+    }
+
+    // Expanded search: Check Title, Category, and Description
+    const matchesSearch = 
+        course.title.toLowerCase().includes(term) ||
+        course.category.toLowerCase().includes(term) ||
+        (course.description && course.description.toLowerCase().includes(term));
+
     return matchesSearch && matchesCategory && matchesPrice;
   });
 
@@ -59,7 +70,11 @@ export const Skills: React.FC<SkillsProps> = ({ onEnroll }) => {
             ].map((skill, i) => (
                 <button 
                     key={i} 
-                    onClick={() => { setSearchTerm(skill.name); setIsSearchOpen(true); }}
+                    onClick={() => { 
+                        setSearchTerm(skill.name); 
+                        setSelectedCategory('All'); // Reset category to ensure global search
+                        setIsSearchOpen(true); 
+                    }}
                     className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400 transition-all shadow-sm hover:shadow-md"
                 >
                     {skill.icon} {skill.name}
@@ -166,7 +181,7 @@ export const Skills: React.FC<SkillsProps> = ({ onEnroll }) => {
             </div>
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No courses match your filters</h3>
             <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md">
-                We couldn't find any courses matching "{searchTerm}" in {selectedCategory} with {priceFilter} price.
+                We couldn't find any courses matching "{searchTerm}" {selectedCategory !== 'All' ? `in ${selectedCategory}` : ''} {priceFilter !== 'All' ? `with ${priceFilter} price` : ''}.
             </p>
             <button 
                 onClick={() => {setSearchTerm(''); setSelectedCategory('All'); setPriceFilter('All');}}
