@@ -1,16 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle, PlayCircle, Star, TrendingUp, Shield, Zap, Award, Briefcase } from 'lucide-react';
-import { COURSES } from '../constants';
 import { CourseCard } from '../components/CourseCard';
 import { Course } from '../types';
+import { getCourses } from '../services/courses';
 
 interface HomeProps {
   onEnroll: (course: Course) => void;
 }
 
 export const Home: React.FC<HomeProps> = ({ onEnroll }) => {
-  const featuredCourses = COURSES.slice(0, 3);
+  const [featuredCourses, setFeaturedCourses] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      setIsLoading(true);
+      const result = await getCourses({ limit: 3 });
+      if (result.data) {
+        setFeaturedCourses(result.data);
+      }
+      setIsLoading(false);
+    };
+    fetchCourses();
+  }, []);
   
   // Reliable avatar images
   const avatars = [
@@ -162,11 +175,19 @@ export const Home: React.FC<HomeProps> = ({ onEnroll }) => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredCourses.map(course => (
-              <CourseCard key={course.id} course={course} onEnroll={onEnroll} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="bg-white dark:bg-gray-800 rounded-2xl h-96 animate-pulse"></div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {featuredCourses.map(course => (
+                <CourseCard key={course.id} course={course} onEnroll={onEnroll} />
+              ))}
+            </div>
+          )}
 
           <div className="mt-12 text-center">
             <Link to="/skills" className="font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 flex items-center justify-center gap-1 group">

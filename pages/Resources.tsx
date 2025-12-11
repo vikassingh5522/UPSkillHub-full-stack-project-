@@ -1,18 +1,44 @@
-import React from 'react';
-import { FileText, Video, Download, ExternalLink, Youtube, Play, ArrowRight, Code, Database, Layers } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { FileText, Video, Download, ExternalLink, Youtube, Play, ArrowRight, Code, Database, Layers, Loader2 } from 'lucide-react';
+import { getResources, trackResourceAccess, type Resource } from '../services/resources';
+
+const iconMap: Record<string, React.ReactNode> = {
+  'FileText': <FileText />,
+  'Video': <Video />,
+  'Download': <Download />,
+  'ExternalLink': <ExternalLink />,
+  'Code': <Code />,
+  'Database': <Database />,
+  'Layers': <Layers />,
+};
 
 export const Resources: React.FC = () => {
-  const resources = [
-    { title: "React.js Cheatsheet 2025", type: "PDF Guide", icon: <FileText />, desc: "Complete quick reference for Hooks, Components, and Redux." },
-    { title: "Introduction to Neural Networks", type: "Video Lecture", icon: <Video />, desc: "A 2-hour deep dive into the math and logic behind AI." },
-    { title: "System Design Interview Guide", type: "E-Book", icon: <Download />, desc: "Ace your FAANG interviews with this comprehensive guide." },
-    { title: "Tailwind CSS Component Library", type: "External Tool", icon: <Layers />, desc: "Copy-paste production ready UI components." },
-    { title: "Python for Beginners Handbook", type: "PDF Guide", icon: <Code />, desc: "Zero to Hero Python programming guide." },
-    { title: "DevOps Roadmap", type: "Interactive Map", icon: <ExternalLink />, desc: "Step-by-step path to becoming a DevOps Engineer." },
-    { title: "VS Code Power User Guide", type: "PDF Guide", icon: <FileText />, desc: "Master shortcuts and extensions to 10x your coding speed." },
-    { title: "Data Structures Visualizer", type: "Interactive Tool", icon: <Database />, desc: "Visualize how algorithms work in real-time." },
-    { title: "GitHub Profile Readme Generator", type: "External Tool", icon: <ExternalLink />, desc: "Create a stunning profile readme in minutes." },
-  ];
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchResources = async () => {
+      setIsLoading(true);
+      const result = await getResources();
+      if (result.data) {
+        setResources(result.data);
+      }
+      setIsLoading(false);
+    };
+    fetchResources();
+  }, []);
+
+  const handleResourceAccess = async (resource: Resource) => {
+    await trackResourceAccess(resource.id);
+    
+    if (resource.type === 'External Tool' || resource.type === 'Interactive Tool' || resource.type === 'Interactive Map') {
+      if (resource.url) {
+        window.open(resource.url, '_blank', 'noopener,noreferrer');
+      }
+    } else {
+      alert(`Accessing ${resource.title}. This would typically download or open the resource.`);
+    }
+  };
 
   const motivationalVideos = [
     {
@@ -58,25 +84,35 @@ export const Resources: React.FC = () => {
         </div>
 
         {/* Resources Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
-            {resources.map((res, i) => (
-                <div key={i} className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col h-full group">
-                    <div className="flex items-start justify-between mb-6">
-                        <div className="bg-primary-50 dark:bg-primary-900/30 p-4 rounded-xl text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-300">
-                            {res.icon}
-                        </div>
-                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                            {res.type}
-                        </span>
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{res.title}</h3>
-                    <p className="text-gray-500 dark:text-gray-400 mb-6 flex-grow">{res.desc}</p>
-                    <button className="w-full py-3.5 rounded-xl bg-gradient-to-r from-primary-600 to-purple-600 text-white font-bold shadow-lg hover:shadow-primary-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 group/btn">
-                        Access Resource <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
-                    </button>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 size={48} className="text-primary-600 dark:text-primary-400 animate-spin" />
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
+            {resources.map((res) => (
+              <div key={res.id} className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col h-full group">
+                <div className="flex items-start justify-between mb-6">
+                  <div className="bg-primary-50 dark:bg-primary-900/30 p-4 rounded-xl text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-300">
+                    {iconMap[res.icon] || <FileText />}
+                  </div>
+                  <span className="text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+                    {res.type}
+                  </span>
                 </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{res.title}</h3>
+                <p className="text-gray-500 dark:text-gray-400 mb-6 flex-grow">{res.description}</p>
+                <button 
+                  onClick={() => handleResourceAccess(res)}
+                  aria-label={`Access ${res.title}`}
+                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-primary-600 to-purple-600 text-white font-bold shadow-lg hover:shadow-primary-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 group/btn"
+                >
+                  Access Resource <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
+                </button>
+              </div>
             ))}
-        </div>
+          </div>
+        )}
 
         {/* Motivational Videos Section */}
         <div className="mb-12">

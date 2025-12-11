@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CourseCard } from '../components/CourseCard';
-import { COURSES } from '../constants';
 import { Course, Category } from '../types';
-import { Search, TrendingUp, Code, Database, Lock, X, Filter } from 'lucide-react';
+import { Search, TrendingUp, Code, Database, Lock, X, Filter, Loader2 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
+import { getCourses } from '../services/courses';
 
 interface SkillsProps {
   onEnroll: (course: Course) => void;
@@ -18,30 +18,41 @@ export const Skills: React.FC<SkillsProps> = ({ onEnroll }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>(initialCategory);
   const [priceFilter, setPriceFilter] = useState<'All' | 'Free' | 'Paid'>('All');
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const categories: (Category | 'All')[] = ['All', 'Development', 'Data Science', 'AI', 'Robotics', 'Future Tech', 'Design', 'Cloud', 'Cybersecurity', 'Business', 'Marketing'];
 
-  const filteredCourses = COURSES.filter(course => {
-    const term = searchTerm.toLowerCase().trim();
-    const matchesCategory = selectedCategory === 'All' || course.category === selectedCategory;
-    const matchesPrice = priceFilter === 'All' 
-      ? true 
-      : priceFilter === 'Free' 
-        ? course.price === 0 
-        : course.price > 0;
+  useEffect(() => {
+    const fetchCourses = async () => {
+      setIsLoading(true);
+      setError(null);
+      
+      const filters: any = {};
+      if (selectedCategory !== 'All') {
+        filters.category = selectedCategory;
+      }
+      if (priceFilter !== 'All') {
+        filters.price = priceFilter.toLowerCase();
+      }
+      if (searchTerm.trim()) {
+        filters.search = searchTerm.trim();
+      }
 
-    if (!term) {
-        return matchesCategory && matchesPrice;
-    }
+      const result = await getCourses(filters);
+      if (result.data) {
+        setCourses(result.data);
+      } else if (result.error) {
+        setError(result.error);
+      }
+      setIsLoading(false);
+    };
 
-    // Expanded search: Check Title, Category, and Description
-    const matchesSearch = 
-        course.title.toLowerCase().includes(term) ||
-        course.category.toLowerCase().includes(term) ||
-        (course.description && course.description.toLowerCase().includes(term));
+    fetchCourses();
+  }, [selectedCategory, priceFilter, searchTerm]);
 
-    return matchesSearch && matchesCategory && matchesPrice;
-  });
+  const filteredCourses = courses;
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen py-8 lg:py-12 transition-colors duration-300">
@@ -168,7 +179,19 @@ export const Skills: React.FC<SkillsProps> = ({ onEnroll }) => {
         </div>
 
         {/* Grid */}
-        {filteredCourses.length > 0 ? (
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 size={48} className="text-primary-600 dark:text-primary-400 animate-spin" />
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-800 rounded-3xl border border-dashed border-gray-300 dark:border-gray-700 mx-auto max-w-2xl text-center px-4">
+            <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center text-red-600 dark:text-red-400 mb-6">
+              <X size={32} />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Error loading courses</h3>
+            <p className="text-gray-500 dark:text-gray-400 mb-8">{error}</p>
+          </div>
+        ) : filteredCourses.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-fade-in-up">
             {filteredCourses.map(course => (
               <CourseCard key={course.id} course={course} onEnroll={onEnroll} />

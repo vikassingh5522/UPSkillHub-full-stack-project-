@@ -1,8 +1,51 @@
-import React from 'react';
-import { BLOG_POSTS } from '../constants';
-import { Calendar, ArrowRight, Zap, Mail, Clock, Tag, ExternalLink } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, ArrowRight, Zap, Mail, Clock, Tag, ExternalLink, CheckCircle, Loader2 } from 'lucide-react';
+import { getBlogPosts } from '../services/blog';
+import { subscribeNewsletter } from '../services/newsletter';
+import type { BlogPost } from '../types';
 
 export const Blog: React.FC = () => {
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [newsletterError, setNewsletterError] = useState<string | null>(null);
+  
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setIsLoading(true);
+      const result = await getBlogPosts();
+      if (result.data) {
+        setBlogPosts(result.data);
+      }
+      setIsLoading(false);
+    };
+    fetchPosts();
+  }, []);
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newsletterEmail)) {
+      setNewsletterError('Please enter a valid email address');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    setNewsletterError(null);
+    
+    const result = await subscribeNewsletter(newsletterEmail.trim());
+    
+    if (result.data) {
+      setIsSubscribed(true);
+      setNewsletterEmail('');
+      setTimeout(() => setIsSubscribed(false), 5000);
+    } else if (result.error) {
+      setNewsletterError(result.error);
+    }
+    
+    setIsSubmitting(false);
+  };
   // Use a specific high-quality image for the featured post to match the design intent
   const featuredPost = {
     ...BLOG_POSTS[0],
@@ -36,52 +79,63 @@ export const Blog: React.FC = () => {
                     </h3>
                 </div>
                 
-                <div className="space-y-6">
-                {regularPosts.map(post => (
-                    <article key={post.id} className="bg-[#0f172a] rounded-2xl overflow-hidden border border-gray-800 hover:border-primary-500/30 transition-all duration-300 group flex flex-col shadow-lg">
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-20">
+                    <Loader2 size={32} className="text-primary-500 animate-spin" />
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {regularPosts.map(post => (
+                      <article key={post.id} className="bg-[#0f172a] rounded-2xl overflow-hidden border border-gray-800 hover:border-primary-500/30 transition-all duration-300 group flex flex-col shadow-lg">
                         <div className="h-44 overflow-hidden relative">
-                             <img 
-                                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100" 
-                                src={post.image} 
-                                alt={post.title} 
-                             />
-                             <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] font-bold text-white uppercase tracking-wide border border-white/10">
-                                {post.category}
-                             </div>
+                          <img 
+                            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100" 
+                            src={post.image} 
+                            alt={post.title} 
+                          />
+                          <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] font-bold text-white uppercase tracking-wide border border-white/10">
+                            {post.category}
+                          </div>
                         </div>
                         <div className="p-5 flex flex-col flex-1">
-                            <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
-                                <Calendar size={12} /> {post.date}
+                          <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                            <Calendar size={12} /> {post.date}
+                          </div>
+                          <a href={post.link} target="_blank" rel="noopener noreferrer" className="block mb-3 group/link">
+                            <h2 className="text-lg font-bold text-gray-100 leading-snug group-hover:text-primary-400 transition-colors">
+                              {post.title}
+                            </h2>
+                          </a>
+                          <p className="text-gray-400 text-sm line-clamp-2 mb-4 leading-relaxed">
+                            {post.excerpt}
+                          </p>
+                          <div className="flex items-center justify-between pt-4 border-t border-gray-700/30 mt-auto">
+                            <div className="flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-full bg-primary-900/50 flex items-center justify-center text-primary-300 text-[10px] font-bold border border-primary-500/20">
+                                {post.author.charAt(0)}
+                              </div>
+                              <span className="text-xs font-medium text-gray-400">{post.author}</span>
                             </div>
-                            <a href={post.link} target="_blank" rel="noopener noreferrer" className="block mb-3 group/link">
-                                <h2 className="text-lg font-bold text-gray-100 leading-snug group-hover:text-primary-400 transition-colors">
-                                    {post.title}
-                                </h2>
+                            <a href={post.link} target="_blank" rel="noopener noreferrer" className="text-primary-400 text-xs font-bold flex items-center gap-1 hover:gap-2 transition-all uppercase tracking-wide">
+                              Read <ArrowRight size={12} />
                             </a>
-                            <p className="text-gray-400 text-sm line-clamp-2 mb-4 leading-relaxed">
-                                {post.excerpt}
-                            </p>
-                            <div className="flex items-center justify-between pt-4 border-t border-gray-700/30 mt-auto">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-6 h-6 rounded-full bg-primary-900/50 flex items-center justify-center text-primary-300 text-[10px] font-bold border border-primary-500/20">
-                                        {post.author.charAt(0)}
-                                    </div>
-                                    <span className="text-xs font-medium text-gray-400">{post.author}</span>
-                                </div>
-                                <a href={post.link} target="_blank" rel="noopener noreferrer" className="text-primary-400 text-xs font-bold flex items-center gap-1 hover:gap-2 transition-all uppercase tracking-wide">
-                                    Read <ArrowRight size={12} />
-                                </a>
-                            </div>
+                          </div>
                         </div>
-                    </article>
-                ))}
-                </div>
+                      </article>
+                    ))}
+                  </div>
+                )}
             </div>
 
             {/* Right Main Column */}
             <div className="lg:col-span-8 space-y-8 order-1 lg:order-2">
                 
                 {/* Featured Hero Post */}
+                {isLoading ? (
+                  <div className="relative bg-[#0f172a] rounded-3xl overflow-hidden shadow-2xl min-h-[500px] flex items-center justify-center">
+                    <Loader2 size={48} className="text-primary-500 animate-spin" />
+                  </div>
+                ) : featuredPost ? (
                 <article className="relative bg-[#0f172a] rounded-3xl overflow-hidden shadow-2xl min-h-[500px] flex flex-col justify-end group border border-gray-800">
                     <div className="absolute inset-0">
                         <img 
@@ -130,6 +184,7 @@ export const Blog: React.FC = () => {
                         </div>
                     </div>
                 </article>
+                ) : null}
 
                 {/* Widgets Grid */}
                 <div className="grid md:grid-cols-2 gap-6">
@@ -147,16 +202,38 @@ export const Blog: React.FC = () => {
                             <p className="text-indigo-200/80 text-sm mb-6 leading-relaxed">
                                 Get the latest career tips and tech news delivered to your inbox.
                             </p>
-                            <div className="flex gap-2">
-                                <input 
-                                    type="email" 
-                                    placeholder="email address" 
-                                    className="bg-[#312e81]/50 border border-indigo-500/30 rounded-lg px-4 py-2.5 text-sm text-white placeholder-indigo-300/50 w-full focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 outline-none transition-all" 
-                                />
-                                <button className="bg-primary-600 hover:bg-primary-500 text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-colors shrink-0 shadow-lg">
-                                    Join
-                                </button>
-                            </div>
+                            {isSubscribed ? (
+                                <div className="flex items-center gap-2 text-green-400 text-sm py-2">
+                                    <CheckCircle size={16} />
+                                    <span>Subscribed successfully!</span>
+                                </div>
+                            ) : (
+                                <form onSubmit={handleNewsletterSubmit} className="flex flex-col gap-2">
+                                    {newsletterError && (
+                                        <div className="text-red-400 text-xs">{newsletterError}</div>
+                                    )}
+                                    <div className="flex gap-2">
+                                        <input 
+                                            type="email" 
+                                            value={newsletterEmail}
+                                            onChange={(e) => {
+                                                setNewsletterEmail(e.target.value);
+                                                setNewsletterError(null);
+                                            }}
+                                            placeholder="email address" 
+                                            required
+                                            className="bg-[#312e81]/50 border border-indigo-500/30 rounded-lg px-4 py-2.5 text-sm text-white placeholder-indigo-300/50 w-full focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 outline-none transition-all" 
+                                        />
+                                        <button 
+                                            type="submit"
+                                            disabled={isSubmitting}
+                                            className="bg-primary-600 hover:bg-primary-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-colors shrink-0 shadow-lg"
+                                        >
+                                            {isSubmitting ? 'Joining...' : 'Join'}
+                                        </button>
+                                    </div>
+                                </form>
+                            )}
                         </div>
                     </div>
 
@@ -167,9 +244,17 @@ export const Blog: React.FC = () => {
                         </h3>
                         <div className="flex flex-wrap gap-2">
                             {['AI & ML', 'Web Dev', 'Cybersecurity', 'Career', 'Soft Skills', 'Productivity'].map(tag => (
-                                <span key={tag} className="px-3 py-1.5 bg-[#0f172a] text-gray-300 text-xs font-bold rounded-lg hover:bg-primary-900/40 hover:text-primary-400 hover:border-primary-500/30 cursor-pointer transition-all border border-gray-700/50">
+                                <button
+                                    key={tag}
+                                    onClick={() => {
+                                        // Could filter blog posts by tag or navigate
+                                        window.location.href = `/blog?tag=${encodeURIComponent(tag.toLowerCase().replace(' & ', '-'))}`;
+                                    }}
+                                    aria-label={`Filter blog posts by ${tag}`}
+                                    className="px-3 py-1.5 bg-[#0f172a] text-gray-300 text-xs font-bold rounded-lg hover:bg-primary-900/40 hover:text-primary-400 hover:border-primary-500/30 cursor-pointer transition-all border border-gray-700/50 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                >
                                     {tag}
-                                </span>
+                                </button>
                             ))}
                         </div>
                     </div>

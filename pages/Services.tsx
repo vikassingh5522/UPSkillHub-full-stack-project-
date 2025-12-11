@@ -132,8 +132,23 @@ export const Services: React.FC = () => {
                 {testimonials.map((story, i) => (
                     <div key={i} className="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 hover:-translate-y-2 transition-transform duration-300">
                         {/* Video Thumbnail */}
-                        <div className="relative h-48 bg-gray-900 group cursor-pointer">
-                            <img src={story.videoThumb} alt="Student success story" className="w-full h-full object-cover opacity-80 group-hover:opacity-60 transition-opacity" />
+                        <div 
+                            onClick={() => {
+                                // Open video in modal or new tab - using a placeholder YouTube link
+                                window.open(`https://www.youtube.com/watch?v=dQw4w9WgXcQ`, '_blank', 'noopener,noreferrer');
+                            }}
+                            className="relative h-48 bg-gray-900 group cursor-pointer"
+                            role="button"
+                            tabIndex={0}
+                            aria-label={`Watch ${story.name}'s success story`}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    window.open(`https://www.youtube.com/watch?v=dQw4w9WgXcQ`, '_blank', 'noopener,noreferrer');
+                                }
+                            }}
+                        >
+                            <img src={story.videoThumb} alt={`${story.name}'s success story`} className="w-full h-full object-cover opacity-80 group-hover:opacity-60 transition-opacity" />
                             <div className="absolute inset-0 flex items-center justify-center">
                                 <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white border-2 border-white group-hover:scale-110 transition-transform">
                                     <Play size={24} fill="currentColor" className="ml-1" />
@@ -293,7 +308,14 @@ export const Services: React.FC = () => {
                         </li>
                     ))}
                 </ul>
-                <button className="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-lg hover:opacity-90 transition-opacity">
+                <button 
+                    onClick={() => {
+                        // Could open a modal or navigate to contact page
+                        window.location.href = '/contact?subject=corporate-training';
+                    }}
+                    aria-label="Request a demo for corporate training"
+                    className="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-lg hover:opacity-90 transition-opacity"
+                >
                     Request a Demo
                 </button>
             </div>

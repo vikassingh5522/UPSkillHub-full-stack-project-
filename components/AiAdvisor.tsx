@@ -29,7 +29,7 @@ export const AiAdvisor: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const apiKey = process.env.API_KEY || '';
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.API_KEY || '';
       if (!apiKey) {
         throw new Error("API Key missing");
       }
@@ -81,6 +81,7 @@ export const AiAdvisor: React.FC = () => {
       {/* FAB */}
       <button
         onClick={() => setIsOpen(true)}
+        aria-label="Open AI Career Advisor"
         className={`fixed bottom-6 right-6 p-4 bg-primary-600 text-white rounded-full shadow-lg hover:bg-primary-700 hover:shadow-xl transition-all z-40 ${isOpen ? 'hidden' : 'flex'} items-center gap-2`}
       >
         <Bot size={24} />
@@ -104,6 +105,7 @@ export const AiAdvisor: React.FC = () => {
             </div>
             <button 
                 onClick={() => setIsOpen(false)}
+                aria-label="Close AI Career Advisor"
                 className="text-white/80 hover:text-white hover:bg-white/10 p-1 rounded transition-colors"
             >
               <X size={20} />
@@ -147,11 +149,13 @@ export const AiAdvisor: React.FC = () => {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyPress}
                 placeholder="Ask for career advice..."
+                aria-label="Message input for AI Career Advisor"
                 className="flex-1 bg-transparent border-none focus:ring-0 text-sm outline-none text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
               />
               <button
                 onClick={handleSend}
                 disabled={isLoading || !input.trim()}
+                aria-label="Send message"
                 className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 disabled:opacity-50 p-1"
               >
                 <Send size={18} />

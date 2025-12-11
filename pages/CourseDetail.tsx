@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { COURSES } from '../constants';
 import { Course } from '../types';
-import { Star, User, Clock, CheckCircle, Globe, PlayCircle, ShieldCheck, ArrowLeft, ChevronDown, ChevronUp, Zap, CreditCard, Layout, ArrowRight, BookOpen, X } from 'lucide-react';
+import { Star, User, Clock, CheckCircle, Globe, PlayCircle, ShieldCheck, ArrowLeft, ChevronDown, ChevronUp, Zap, CreditCard, Layout, ArrowRight, BookOpen, X, Loader2 } from 'lucide-react';
+import { getCourseById } from '../services/courses';
+import { getEnrollmentByCourseId } from '../services/enrollments';
+import { useAuth } from '../contexts/AuthContext';
 
 interface CourseDetailProps {
   onEnroll: (course: Course) => void;
@@ -10,10 +12,47 @@ interface CourseDetailProps {
 
 export const CourseDetail: React.FC<CourseDetailProps> = ({ onEnroll }) => {
   const { id } = useParams<{ id: string }>();
-  const course = COURSES.find(c => c.id === id);
+  const { isAuthenticated } = useAuth();
+  const [course, setCourse] = useState<Course | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isEnrolled, setIsEnrolled] = useState(false);
   const [openModuleIndex, setOpenModuleIndex] = useState<number | null>(0);
   const [pricingPlan, setPricingPlan] = useState<'one-time' | 'subscription'>('one-time');
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchCourse = async () => {
+      if (!id) return;
+      setIsLoading(true);
+      const result = await getCourseById(id);
+      if (result.data) {
+        setCourse(result.data);
+      }
+      setIsLoading(false);
+    };
+
+    fetchCourse();
+  }, [id]);
+
+  useEffect(() => {
+    const checkEnrollment = async () => {
+      if (!id || !isAuthenticated || !course) return;
+      const result = await getEnrollmentByCourseId(parseInt(id));
+      if (result.data) {
+        setIsEnrolled(true);
+      }
+    };
+
+    checkEnrollment();
+  }, [id, isAuthenticated, course]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <Loader2 size={48} className="text-primary-600 dark:text-primary-400 animate-spin" />
+      </div>
+    );
+  }
 
   if (!course) {
     return (
@@ -260,10 +299,24 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ onEnroll }) => {
 
                         <button
                             onClick={() => onEnroll(course)}
-                            className="w-full py-4 bg-primary-600 text-white font-bold rounded-xl shadow-lg hover:bg-primary-700 hover:shadow-primary-500/30 transition-all mb-4 flex items-center justify-center gap-2 group"
+                            disabled={isEnrolled}
+                            className={`w-full py-4 text-white font-bold rounded-xl shadow-lg transition-all mb-4 flex items-center justify-center gap-2 group ${
+                              isEnrolled 
+                                ? 'bg-green-600 cursor-not-allowed' 
+                                : 'bg-primary-600 hover:bg-primary-700 hover:shadow-primary-500/30'
+                            }`}
                         >
-                            {pricingPlan === 'subscription' ? 'Start Free Trial' : (course.price === 0 ? 'Enroll Now' : 'Buy Now')}
-                            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                            {isEnrolled ? (
+                              <>
+                                <CheckCircle size={18} />
+                                Enrolled
+                              </>
+                            ) : (
+                              <>
+                                {pricingPlan === 'subscription' ? 'Start Free Trial' : (course.price === 0 ? 'Enroll Now' : 'Buy Now')}
+                                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                              </>
+                            )}
                         </button>
                         
                         <p className="text-center text-[10px] text-gray-400 mb-6">30-Day Money-Back Guarantee</p>
@@ -296,7 +349,13 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ onEnroll }) => {
                 <div className="bg-gray-100 dark:bg-gray-800/50 p-6 rounded-2xl border border-gray-200 dark:border-gray-700">
                     <h4 className="font-bold text-gray-900 dark:text-white mb-2">Training 5 or more people?</h4>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Get your team access to 5,000+ top courses anytime, anywhere.</p>
-                    <button className="text-sm font-bold text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 px-4 py-2 rounded-lg w-full hover:bg-white dark:hover:bg-gray-700 transition-colors">
+                    <button 
+                        onClick={() => {
+                            window.location.href = '/services#corporate-training';
+                        }}
+                        aria-label="Learn about UpSkillHub Business"
+                        className="text-sm font-bold text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 px-4 py-2 rounded-lg w-full hover:bg-white dark:hover:bg-gray-700 transition-colors"
+                    >
                         Get UpSkillHub Business
                     </button>
                 </div>
@@ -311,6 +370,7 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ onEnroll }) => {
             <div className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
                 <button 
                     onClick={() => setIsPreviewOpen(false)}
+                    aria-label="Close video preview"
                     className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors"
                 >
                     <X size={24} />
@@ -318,7 +378,7 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ onEnroll }) => {
                 <iframe 
                     width="100%" 
                     height="100%" 
-                    src="https://www.youtube.com/embed/LXb3EKWsInQ?autoplay=1" 
+                    src={`https://www.youtube.com/embed/${course.previewVideoId || 'LXb3EKWsInQ'}?autoplay=1`}
                     title="Course Preview" 
                     frameBorder="0" 
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 

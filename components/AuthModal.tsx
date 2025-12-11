@@ -103,6 +103,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         <button 
           onClick={handleClose}
           disabled={isSubmitting}
+          aria-label="Close authentication modal"
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 z-10 disabled:opacity-50"
         >
           <X size={24} />

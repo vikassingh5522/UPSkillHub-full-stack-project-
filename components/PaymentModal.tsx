@@ -1,35 +1,80 @@
 import React, { useState, useEffect } from 'react';
-import { X, CreditCard, Lock, CheckCircle, Loader2 } from 'lucide-react';
+import { X, CreditCard, Lock, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
 import { Course } from '../types';
+import { createPayment } from '../services/payments';
+import { createEnrollment } from '../services/enrollments';
 
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   course: Course | null;
   onSuccess: () => void;
+  paymentMethod?: 'one-time' | 'subscription';
 }
 
-export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, course, onSuccess }) => {
-  const [step, setStep] = useState<'payment' | 'processing' | 'success'>('payment');
+export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, course, onSuccess, paymentMethod = 'one-time' }) => {
+  const [step, setStep] = useState<'payment' | 'processing' | 'success' | 'error'>('payment');
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isOpen) setStep('payment');
+    if (isOpen) {
+      setStep('payment');
+      setError(null);
+    }
   }, [isOpen]);
 
   if (!isOpen || !course) return null;
 
-  const handlePayment = (e: React.FormEvent) => {
+  const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     setStep('processing');
+    setError(null);
     
-    // Simulate API call and processing delay
-    setTimeout(() => {
+    try {
+      // For free courses, just enroll directly
+      if (course.price === 0) {
+        const enrollmentResult = await createEnrollment({
+          courseId: parseInt(course.id),
+          paymentMethod: 'one-time',
+        });
+        
+        if (enrollmentResult.error) {
+          setStep('error');
+          setError(enrollmentResult.error);
+          return;
+        }
+        
+        setStep('success');
+        setTimeout(() => {
+          onSuccess();
+          onClose();
+        }, 2500);
+        return;
+      }
+
+      // For paid courses, process payment first
+      const paymentResult = await createPayment({
+        courseId: parseInt(course.id),
+        amount: course.price,
+        paymentMethod: paymentMethod as 'one-time' | 'subscription',
+      });
+      
+      if (paymentResult.error) {
+        setStep('error');
+        setError(paymentResult.error);
+        return;
+      }
+
+      // Payment successful, enrollment is created automatically by backend
       setStep('success');
       setTimeout(() => {
         onSuccess();
         onClose();
       }, 2500);
-    }, 2000);
+    } catch (err) {
+      setStep('error');
+      setError('An unexpected error occurred. Please try again.');
+    }
   };
 
   return (
@@ -42,12 +87,30 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, cou
       <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100 animate-in fade-in zoom-in-95 duration-200">
         <button 
           onClick={onClose}
+          aria-label="Close payment modal"
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 z-10 transition-colors"
         >
           <X size={24} />
         </button>
 
-        {step === 'success' ? (
+        {step === 'error' ? (
+          <div className="p-10 flex flex-col items-center text-center">
+            <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center text-red-600 dark:text-red-400 mb-6">
+              <AlertCircle size={40} />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Payment Failed</h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">{error || 'An error occurred during payment processing.'}</p>
+            <button
+              onClick={() => {
+                setStep('payment');
+                setError(null);
+              }}
+              className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : step === 'success' ? (
            <div className="p-10 flex flex-col items-center text-center">
              <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center text-green-600 dark:text-green-400 mb-6 animate-in zoom-in duration-300">
                <CheckCircle size={40} />
