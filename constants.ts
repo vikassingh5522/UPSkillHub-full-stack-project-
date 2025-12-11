@@ -861,7 +861,7 @@ export const COURSES: Course[] = [
     image: 'https://images.unsplash.com/photo-1614064641938-3bcee5297404?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     duration: '15 hours',
     level: 'Beginner',
-    description: "Understand the revolution of 5G. Learn about the architecture, spectrum, massive MIMO, and how 5G enables IoT, autonomous vehicles, and smart cities.",
+    description: "Understand the revolution of 5G. Learn to analyze spectrum, massive MIMO, and how 5G enables IoT, autonomous vehicles, and smart cities.",
     whatYouWillLearn: [
       "Understand 5G NR (New Radio)",
       "Differentiate Non-Standalone (NSA) vs Standalone (SA)",
@@ -913,7 +913,7 @@ export const BLOG_POSTS: BlogPost[] = [
         author: 'Alex Johnson',
         image: 'https://images.unsplash.com/photo-1504384308090-c54be3855833?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         category: 'Career',
-        link: '#'
+        link: 'https://roadmap.sh'
     },
     {
         id: '2',
@@ -923,7 +923,7 @@ export const BLOG_POSTS: BlogPost[] = [
         author: 'Dr. Emily Chen',
         image: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         category: 'AI',
-        link: '#'
+        link: 'https://openai.com/blog'
     },
     {
         id: '3',
@@ -933,7 +933,7 @@ export const BLOG_POSTS: BlogPost[] = [
         author: 'Michael Smith',
         image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         category: 'Cybersecurity',
-        link: '#'
+        link: 'https://www.cisa.gov/cybersecurity-training-exercises'
     },
     {
         id: '4',
@@ -943,6 +943,6 @@ export const BLOG_POSTS: BlogPost[] = [
         author: 'Sarah Jenkins',
         image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         category: 'Soft Skills',
-        link: '#'
+        link: 'https://www.mindtools.com'
     }
 ];
