@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, GraduationCap, User, LogOut, Sun, Moon } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 interface NavbarProps {
-  isLoggedIn: boolean;
   onLoginClick: () => void;
-  onLogout: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLoginClick, onLogout }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onLoginClick }) => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -17,6 +16,8 @@ export const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLoginClick, onLogo
     }
     return 'light';
   });
+
+  const { isAuthenticated, user, signOut } = useAuth();
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -43,6 +44,16 @@ export const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLoginClick, onLogo
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const getUserDisplayName = () => {
+    if (user?.name) {
+      return user.name;
+    }
+    if (user?.email) {
+      return user.email.split('@')[0];
+    }
+    return 'Student';
+  };
 
   return (
     <nav className="sticky top-0 z-50 w-full glass-panel border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
@@ -83,11 +94,13 @@ export const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLoginClick, onLogo
               {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
             </button>
 
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Welcome, Student</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Welcome, {getUserDisplayName()}
+                </span>
                 <button
-                  onClick={onLogout}
+                  onClick={signOut}
                   className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30 transition-colors"
                 >
                   <LogOut size={16} />
@@ -149,16 +162,21 @@ export const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLoginClick, onLogo
               </Link>
             ))}
             <div className="pt-4 border-t border-gray-100 dark:border-gray-800 mt-4">
-              {isLoggedIn ? (
-                <button
-                  onClick={() => {
-                    onLogout();
-                    setIsOpen(false);
-                  }}
-                  className="w-full text-left px-3 py-2 text-base font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
-                >
-                  Sign Out
-                </button>
+              {isAuthenticated ? (
+                <>
+                  <div className="px-3 py-2 text-sm text-gray-600 dark:text-gray-400">
+                    Signed in as {getUserDisplayName()}
+                  </div>
+                  <button
+                    onClick={() => {
+                      signOut();
+                      setIsOpen(false);
+                    }}
+                    className="w-full text-left px-3 py-2 text-base font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  >
+                    Sign Out
+                  </button>
+                </>
               ) : (
                 <button
                   onClick={() => {

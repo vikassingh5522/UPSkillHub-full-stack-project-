@@ -1,4 +1,14 @@
-export type Category = 'Development' | 'Data Science' | 'Design' | 'Business' | 'Marketing' | 'Cloud' | 'Cybersecurity' | 'AI' | 'Robotics' | 'Future Tech';
+export type Category =
+  | "Development"
+  | "Data Science"
+  | "Design"
+  | "Business"
+  | "Marketing"
+  | "Cloud"
+  | "Cybersecurity"
+  | "AI"
+  | "Robotics"
+  | "Future Tech";
 
 export interface Course {
   id: string;
@@ -10,7 +20,7 @@ export interface Course {
   category: Category;
   image: string;
   duration: string;
-  level: 'Beginner' | 'Intermediate' | 'Advanced';
+  level: "Beginner" | "Intermediate" | "Advanced";
   description?: string;
   whatYouWillLearn?: string[];
   syllabus?: { title: string; items: string[] }[];
@@ -44,6 +54,89 @@ export interface BlogPost {
 }
 
 export interface ChatMessage {
-  role: 'user' | 'model';
+  role: "user" | "model";
   text: string;
+}
+
+// Authentication Types
+
+export interface Organization {
+  id: number;
+  name: string;
+  role: "member" | "admin" | "owner";
+}
+
+export interface AuthUser {
+  id: number;
+  email: string;
+  name: string | null;
+  organizationId?: number;
+  organizations?: Organization[];
+}
+
+export interface SignUpRequest {
+  email: string;
+  password: string;
+  name?: string;
+  organizationName: string;
+}
+
+export interface SignInRequest {
+  email: string;
+  password: string;
+  organizationName: string;
+}
+
+export interface SignUpResponse {
+  success: boolean;
+  token: string;
+  user: {
+    id: number;
+    email: string;
+    name: string | null;
+  };
+  organization: {
+    id: number;
+    name: string;
+  };
+}
+
+export interface SignInResponse {
+  success: boolean;
+  token: string;
+  user: {
+    id: number;
+    email: string;
+    name: string | null;
+    organizationId: number;
+    organizations: Organization[];
+  };
+}
+
+export interface ApiError {
+  error: string;
+  details?: {
+    issues?: Array<{
+      code: string;
+      message: string;
+      path: string[];
+    }>;
+  };
+}
+
+export interface AuthContextType {
+  user: AuthUser | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  signUp: (
+    email: string,
+    password: string,
+    name?: string
+  ) => Promise<{ success: boolean; error?: string }>;
+  signIn: (
+    email: string,
+    password: string
+  ) => Promise<{ success: boolean; error?: string }>;
+  signOut: () => void;
 }

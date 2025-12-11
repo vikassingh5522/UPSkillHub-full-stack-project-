@@ -13,26 +13,18 @@ import { CourseDetail } from './pages/CourseDetail';
 import { AuthModal } from './components/AuthModal';
 import { PaymentModal } from './components/PaymentModal';
 import { AiAdvisor } from './components/AiAdvisor';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Course } from './types';
 
-const App: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+const AppContent: React.FC = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-    setIsAuthModalOpen(false);
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    // In a real app, clear tokens here
-  };
+  const { isAuthenticated } = useAuth();
 
   const handleEnroll = (course: Course) => {
-    if (!isLoggedIn) {
+    if (!isAuthenticated) {
       setIsAuthModalOpen(true);
       return;
     }
@@ -48,13 +40,11 @@ const App: React.FC = () => {
   }
 
   return (
-    <Router>
+    <>
       <ScrollToTop />
       <div className="flex flex-col min-h-screen font-sans bg-gray-50 text-slate-900 dark:bg-gray-900 dark:text-white transition-colors duration-300">
         <Navbar 
-          isLoggedIn={isLoggedIn} 
           onLoginClick={() => setIsAuthModalOpen(true)}
-          onLogout={handleLogout}
         />
 
         <main className="flex-grow">
@@ -77,7 +67,6 @@ const App: React.FC = () => {
         <AuthModal 
           isOpen={isAuthModalOpen} 
           onClose={() => setIsAuthModalOpen(false)}
-          onLogin={handleLogin}
         />
 
         <PaymentModal
@@ -93,6 +82,16 @@ const App: React.FC = () => {
           }}
         />
       </div>
+    </>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <Router>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </Router>
   );
 };
