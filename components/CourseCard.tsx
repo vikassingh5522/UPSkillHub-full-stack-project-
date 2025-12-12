@@ -3,9 +3,15 @@ import { Star, Clock, User, ArrowRight, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Course } from '../types';
 
+type EnrollResult =
+  | { success?: boolean }
+  | boolean
+  | void
+  | Promise<{ success?: boolean } | boolean | void>;
+
 interface CourseCardProps {
   course: Course;
-  onEnroll: (course: Course) => void;
+  onEnroll: (course: Course) => EnrollResult;
 }
 
 export const CourseCard: React.FC<CourseCardProps> = ({ course, onEnroll }) => {
@@ -17,7 +23,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onEnroll }) => {
           alt={course.title}
           className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-60"></div>
         
         <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-gray-800 shadow-sm z-10 uppercase tracking-wide">
           {course.level}
@@ -35,7 +41,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onEnroll }) => {
         </div>
       </Link>
 
-      <div className="p-5 flex flex-col flex-grow">
+      <div className="p-5 flex flex-col grow">
         <div className="flex items-center gap-2 mb-3">
             <span className="text-[10px] font-bold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/30 px-2 py-1 rounded-md uppercase tracking-wider">
                 {course.category}
@@ -66,19 +72,19 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onEnroll }) => {
         </div>
 
         <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between gap-4">
-            <div className="flex flex-col">
-                <span className="text-xs text-gray-400 font-medium">Price</span>
-                <span className="text-lg font-bold text-gray-900 dark:text-white">
-                    {course.price === 0 ? 'Free' : `$${course.price}`}
-                </span>
-            </div>
-            <Link 
-                to={`/course/${course.id}`}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-primary-600 text-white font-semibold rounded-xl transition-all duration-300 group/btn text-sm shadow-md hover:bg-primary-700 hover:shadow-lg transform active:scale-[0.98]"
-            >
-                View Details
-                <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
-            </Link>
+          <div className="flex flex-col">
+              <span className="text-xs text-gray-400 font-medium">Price</span>
+              <span className="text-lg font-bold text-gray-900 dark:text-white">
+                  {course.price === 0 ? 'Free' : `$${course.price}`}
+              </span>
+          </div>
+          <Link 
+              to={`/course/${course.id}`}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-primary-600 text-white font-semibold rounded-xl transition-all duration-300 text-sm shadow-md hover:bg-primary-700 hover:shadow-lg transform active:scale-[0.98]"
+          >
+              View Details
+              <ArrowRight size={16} className="translate-x-0 group-hover/btn:translate-x-1 transition-transform" />
+          </Link>
         </div>
       </div>
     </div>

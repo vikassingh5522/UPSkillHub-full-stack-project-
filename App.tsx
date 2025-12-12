@@ -20,16 +20,21 @@ const AppContent: React.FC = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [pendingEnrollResolve, setPendingEnrollResolve] = useState<((value: { success: boolean }) => void) | null>(null);
 
   const { isAuthenticated } = useAuth();
 
   const handleEnroll = (course: Course) => {
     if (!isAuthenticated) {
       setIsAuthModalOpen(true);
-      return;
+      return { success: false };
     }
-    setSelectedCourse(course);
-    setIsPaymentModalOpen(true);
+
+    return new Promise<{ success: boolean }>((resolve) => {
+      setSelectedCourse(course);
+      setPendingEnrollResolve(() => resolve);
+      setIsPaymentModalOpen(true);
+    });
   };
 
   const ScrollToTop = () => {
@@ -47,7 +52,7 @@ const AppContent: React.FC = () => {
           onLoginClick={() => setIsAuthModalOpen(true)}
         />
 
-        <main className="flex-grow">
+        <main className="grow">
           <Routes>
             <Route path="/" element={<Home onEnroll={handleEnroll} />} />
             <Route path="/skills" element={<Skills onEnroll={handleEnroll} />} />
@@ -73,12 +78,16 @@ const AppContent: React.FC = () => {
           isOpen={isPaymentModalOpen}
           onClose={() => {
             setIsPaymentModalOpen(false);
+            if (pendingEnrollResolve) pendingEnrollResolve({ success: false });
+            setPendingEnrollResolve(null);
             setTimeout(() => setSelectedCourse(null), 300);
           }}
           course={selectedCourse}
           onSuccess={() => {
-             // Handle post-enrollment logic here (e.g. update user state)
-             console.log("Enrolled in", selectedCourse?.title);
+             if (pendingEnrollResolve) pendingEnrollResolve({ success: true });
+             setPendingEnrollResolve(null);
+             setIsPaymentModalOpen(false);
+             setTimeout(() => setSelectedCourse(null), 300);
           }}
         />
       </div>

@@ -7,7 +7,7 @@ export interface Payment {
   amount: number;
   currency: string;
   status: "pending" | "completed" | "failed" | "refunded";
-  paymentMethod: "one-time" | "subscription";
+  paymentMethod: "card" | "credit_card" | "debit_card" | "upi" | "netbanking" | "wallet" | "subscription" | "one-time";
   transactionId: string | null;
   createdAt: string;
   updatedAt?: string;
@@ -16,8 +16,9 @@ export interface Payment {
 export interface CreatePaymentRequest {
   courseId: number;
   amount: number;
-  paymentMethod: "one-time" | "subscription";
+  paymentMethod: "card" | "credit_card" | "debit_card" | "upi" | "netbanking" | "wallet" | "subscription" | "one-time";
   cardToken?: string;
+  upiId?: string;
 }
 
 export async function createPayment(

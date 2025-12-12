@@ -4,24 +4,30 @@ import { Course } from '../types';
 import { createPayment } from '../services/payments';
 import { createEnrollment } from '../services/enrollments';
 
+type PaymentMethodOption = 'card' | 'credit_card' | 'debit_card' | 'upi' | 'netbanking' | 'wallet' | 'subscription' | 'one-time';
+
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   course: Course | null;
   onSuccess: () => void;
-  paymentMethod?: 'one-time' | 'subscription';
+  paymentMethod?: PaymentMethodOption;
 }
 
-export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, course, onSuccess, paymentMethod = 'one-time' }) => {
+export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, course, onSuccess, paymentMethod = 'card' }) => {
   const [step, setStep] = useState<'payment' | 'processing' | 'success' | 'error'>('payment');
   const [error, setError] = useState<string | null>(null);
+  const [selectedMethod, setSelectedMethod] = useState<PaymentMethodOption>(paymentMethod);
+  const [upiId, setUpiId] = useState('');
 
   useEffect(() => {
     if (isOpen) {
       setStep('payment');
       setError(null);
+      setSelectedMethod(paymentMethod);
+      setUpiId('');
     }
-  }, [isOpen]);
+  }, [isOpen, paymentMethod]);
 
   if (!isOpen || !course) return null;
 
@@ -56,7 +62,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, cou
       const paymentResult = await createPayment({
         courseId: parseInt(course.id),
         amount: course.price,
-        paymentMethod: paymentMethod as 'one-time' | 'subscription',
+        paymentMethod: selectedMethod,
+        upiId: selectedMethod === 'upi' ? upiId : undefined,
       });
       
       if (paymentResult.error) {
@@ -140,9 +147,33 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, cou
                 </span>
              </div>
 
-             <form onSubmit={handlePayment}>
+             <form onSubmit={handlePayment} className="space-y-4">
                 {course.price > 0 && (
-                  <div className="space-y-4 mb-6">
+                  <div className="space-y-3">
+                    <p className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Payment Method</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {[
+                        { value: 'card', label: 'Credit / Debit Card' },
+                        { value: 'upi', label: 'UPI' },
+                        { value: 'netbanking', label: 'Net Banking' },
+                        { value: 'wallet', label: 'Wallet' },
+                      ].map(method => (
+                        <button
+                          key={method.value}
+                          type="button"
+                          onClick={() => setSelectedMethod(method.value as PaymentMethodOption)}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg border transition-colors ${selectedMethod === method.value ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-200' : 'border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-primary-300'}`}
+                        >
+                          <span className="text-sm font-semibold">{method.label}</span>
+                          <span className={`w-4 h-4 rounded-full border ${selectedMethod === method.value ? 'bg-primary-500 border-primary-500' : 'border-gray-300'}`} />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {course.price > 0 && (selectedMethod === 'card' || selectedMethod === 'credit_card' || selectedMethod === 'debit_card') && (
+                  <div className="space-y-4">
                      <div>
                         <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-1.5">Card Information</label>
                         <div className="relative">
@@ -184,7 +215,22 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, cou
                      </div>
                   </div>
                 )}
-                
+
+                {course.price > 0 && selectedMethod === 'upi' && (
+                  <div className="space-y-2">
+                    <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-1.5">UPI ID</label>
+                    <input
+                      type="text"
+                      value={upiId}
+                      onChange={e => setUpiId(e.target.value)}
+                      className="block w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-shadow bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400"
+                      placeholder="name@upi"
+                      required
+                    />
+                    <p className="text-xs text-gray-500 dark:text-gray-400">We will request approval via your UPI app.</p>
+                  </div>
+                )}
+
                 <button
                   type="submit"
                   className="w-full py-3.5 px-4 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl shadow-lg hover:shadow-primary-500/25 transition-all flex items-center justify-center gap-2 transform active:scale-[0.98]"
@@ -192,7 +238,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, cou
                   {course.price === 0 ? 'Confirm Enrollment' : `Pay $${course.price}`}
                 </button>
                 
-                <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-400">
+                <div className="mt-2 flex items-center justify-center gap-2 text-xs text-gray-400">
                    <Lock size={12} />
                    <span>Payments are secure and encrypted</span>
                 </div>

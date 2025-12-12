@@ -10,6 +10,19 @@ export type Category =
   | "Robotics"
   | "Future Tech";
 
+export interface CourseLecture {
+  title: string;
+  duration?: string;
+  videoId?: string;
+  videoUrl?: string;
+}
+
+export interface CourseModule {
+  title: string;
+  items?: string[];
+  lectures?: CourseLecture[];
+}
+
 export interface Course {
   id: string;
   title: string;
@@ -23,7 +36,7 @@ export interface Course {
   level: "Beginner" | "Intermediate" | "Advanced";
   description?: string;
   whatYouWillLearn?: string[];
-  syllabus?: { title: string; items: string[] }[];
+  syllabus?: CourseModule[];
   lastUpdated?: string;
   language?: string;
   prerequisites?: string[];

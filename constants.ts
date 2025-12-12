@@ -52,8 +52,24 @@ export const COURSES: Course[] = [
       "Matplotlib and Seaborn for data visualization"
     ],
     syllabus: [
-      { title: "Python Crash Course", items: ["Data Types", "Functions", "Logic"] },
-      { title: "Data Analysis", items: ["NumPy Arrays", "Pandas DataFrames", "Data Cleaning"] },
+      { 
+        title: "Python Crash Course", 
+        items: ["Data Types", "Functions", "Logic"],
+        lectures: [
+          { title: "Data Types", duration: "10:12", videoId: "N4mEzFDjqtA" },
+          { title: "Functions", duration: "09:45", videoId: "9Os0o3wzS_I" },
+          { title: "Logic", duration: "08:58", videoId: "bGC2fNALbNU" }
+        ] 
+      },
+      { 
+        title: "Data Analysis", 
+        items: ["NumPy Arrays", "Pandas DataFrames", "Data Cleaning"],
+        lectures: [
+          { title: "NumPy Arrays", duration: "11:02", videoId: "QUT1VHiLmmI" },
+          { title: "Pandas DataFrames", duration: "12:15", videoId: "vmEHCJofslg" },
+          { title: "Data Cleaning", duration: "10:20", videoId: "PSeyg2n3C34" }
+        ] 
+      },
       { title: "Visualization", items: ["Matplotlib", "Seaborn", "Plotly"] },
       { title: "Machine Learning", items: ["Linear Regression", "Logistic Regression", "K-Nearest Neighbors"] }
     ],
@@ -83,9 +99,33 @@ export const COURSES: Course[] = [
     ],
     syllabus: [
       { title: "Design Fundamentals", items: ["Color Theory", "Typography", "Layout & Composition"] },
-      { title: "Figma Essentials", items: ["Interface Tour", "Vector Shapes", "Constraints & Auto Layout"] },
-      { title: "Prototyping", items: ["Transitions", "Animations", "Micro-interactions"] },
-      { title: "Career in Design", items: ["Portfolio Building", "Freelancing", "Interview Prep"] }
+      { 
+        title: "Figma Essentials", 
+        items: ["Interface Tour", "Vector Shapes", "Constraints & Auto Layout"],
+        lectures: [
+          { title: "Interface Tour", duration: "10:00", videoId: "c9Wg6Cb_YlU" },
+          { title: "Vector Shapes", duration: "10:00", videoId: "zc8eFy4r5lY" },
+          { title: "Constraints & Auto Layout", duration: "10:00", videoId: "EForMDZgkko" }
+        ]
+      },
+      { 
+        title: "Prototyping", 
+        items: ["Transitions", "Animations", "Micro-interactions"],
+        lectures: [
+          { title: "Transitions", duration: "10:00", videoId: "g8Pm5V7MTc4" },
+          { title: "Animations", duration: "10:00", videoId: "Hhxr-4kYk-A" },
+          { title: "Micro-interactions", duration: "10:00", videoId: "Wg1KcJsteVE" }
+        ]
+      },
+      { 
+        title: "Career in Design", 
+        items: ["Portfolio Building", "Freelancing", "Interview Prep"],
+        lectures: [
+          { title: "Portfolio Building", duration: "10:00", videoId: "t7DrJqc6XKI" },
+          { title: "Freelancing", duration: "10:00", videoId: "3jYLkR8opQo" },
+          { title: "Interview Prep", duration: "10:00", videoId: "mJ-4WQ_RVPU" }
+        ]
+      }
     ],
     lastUpdated: "November 2025",
     language: "English",
@@ -202,10 +242,42 @@ export const COURSES: Course[] = [
       "Create text, code, and images with AI"
     ],
     syllabus: [
-      { title: "GenAI Basics", items: ["What is Generative AI?", "LLMs vs Traditional AI", "Use Cases"] },
-      { title: "Prompt Engineering", items: ["Zero-shot vs Few-shot", "Chain of Thought", "Best Practices"] },
-      { title: "AI Tools", items: ["Using Gemini", "Image Generation Tools", "Coding Assistants"] },
-      { title: "Future of AI", items: ["Ethics", "Societal Impact", "Upcoming Trends"] }
+      { 
+        title: "GenAI Basics", 
+        items: ["What is Generative AI?", "LLMs vs Traditional AI", "Use Cases"],
+        lectures: [
+          { title: "What is Generative AI?", duration: "10:00", videoId: "G2fqAlgmoPo" },
+          { title: "LLMs vs Traditional AI", duration: "10:10", videoId: "vP2G1GJc8XQ" },
+          { title: "Use Cases", duration: "09:40", videoId: "2JbL8Z6Dxkw" }
+        ]
+      },
+      { 
+        title: "Prompt Engineering", 
+        items: ["Zero-shot vs Few-shot", "Chain of Thought", "Best Practices"],
+        lectures: [
+          { title: "Zero-shot vs Few-shot", duration: "10:05", videoId: "zRtg1JbH6Kw" },
+          { title: "Chain of Thought", duration: "09:55", videoId: "1fM3A3sEznI" },
+          { title: "Best Practices", duration: "10:15", videoId: "vwP7U0W6lyY" }
+        ]
+      },
+      { 
+        title: "AI Tools", 
+        items: ["Using Gemini", "Image Generation Tools", "Coding Assistants"],
+        lectures: [
+          { title: "Using Gemini", duration: "08:45", videoId: "b7NMsUZPQwA" },
+          { title: "Image Generation Tools", duration: "09:30", videoId: "kV8oPZxC25o" },
+          { title: "Coding Assistants", duration: "09:10", videoId: "E0J3V1JrVNc" }
+        ]
+      },
+      { 
+        title: "Future of AI", 
+        items: ["Ethics", "Societal Impact", "Upcoming Trends"],
+        lectures: [
+          { title: "Ethics", duration: "08:30", videoId: "Kt6cqQJ1z1E" },
+          { title: "Societal Impact", duration: "09:00", videoId: "Z6bq2lRy6jE" },
+          { title: "Upcoming Trends", duration: "09:20", videoId: "2C2E8p8nH3w" }
+        ]
+      }
     ],
     lastUpdated: "January 2025",
     language: "English",
