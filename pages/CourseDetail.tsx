@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Course } from '../types';
-import { Star, User, Clock, CheckCircle, Globe, PlayCircle, ShieldCheck, ArrowLeft, ChevronDown, ChevronUp, Zap, CreditCard, Layout, ArrowRight, BookOpen, X, Loader2, Lock } from 'lucide-react';
+import { Star, User, Clock, CheckCircle, Globe, PlayCircle, ShieldCheck, ArrowLeft, ChevronDown, ChevronUp, Zap, CreditCard, Layout, ArrowRight, BookOpen, X, Loader2 } from 'lucide-react';
 import { getCourseById } from '../services/courses';
-import { getEnrollmentByCourseId } from '../services/enrollments';
-import { useAuth } from '../contexts/AuthContext';
 
 type EnrollResult =
   | { success?: boolean }
@@ -18,10 +16,8 @@ interface CourseDetailProps {
 
 export const CourseDetail: React.FC<CourseDetailProps> = ({ onEnroll }) => {
   const { id } = useParams<{ id: string }>();
-  const { isAuthenticated } = useAuth();
   const [course, setCourse] = useState<Course | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isEnrolled, setIsEnrolled] = useState(false);
   const [openModuleIndex, setOpenModuleIndex] = useState<number | null>(0);
   const [pricingPlan, setPricingPlan] = useState<'one-time' | 'subscription'>('one-time');
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -47,8 +43,8 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ onEnroll }) => {
   }, [id]);
 
   useEffect(() => {
-    const canInitVideo = course && isAuthenticated && isEnrolled;
-    if (!canInitVideo) {
+    // Allow video access without authentication or enrollment
+    if (!course) {
       setActiveVideo(null);
       return;
     }
@@ -73,19 +69,9 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ onEnroll }) => {
         videoId: course?.previewVideoId || 'LXb3EKWsInQ',
       },
     );
-  }, [course, isAuthenticated, isEnrolled]);
+  }, [course]);
 
-  useEffect(() => {
-    const checkEnrollment = async () => {
-      if (!id || !isAuthenticated || !course) return;
-      const result = await getEnrollmentByCourseId(parseInt(id));
-      if (result.data) {
-        setIsEnrolled(true);
-      }
-    };
-
-    checkEnrollment();
-  }, [id, isAuthenticated, course]);
+  // Enrollment check removed - all courses are now free and accessible without enrollment
 
   if (isLoading) {
     return (
@@ -152,21 +138,15 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ onEnroll }) => {
   };
 
   const currentPrice = pricingPlan === 'one-time' ? course.price : 29.99;
-  const canAccessContent = isAuthenticated && isEnrolled;
-  const isPaidCourse = course.price > 0;
+  const canAccessContent = true; // All courses are free and accessible without login
+  const isPaidCourse = false; // All courses are now free
 
   const handleAccessClick = async () => {
+    // Enrollment is now optional - videos are accessible without enrollment
     try {
       const result = onEnroll(course);
       const awaited = result instanceof Promise ? await result : result;
-      const success =
-        awaited === true ||
-        (typeof awaited === 'object' && awaited !== null && awaited.success !== false && awaited.success !== undefined)
-        ? Boolean((awaited as any).success ?? true)
-        : false;
-      if (success) {
-        setIsEnrolled(true);
-      }
+      // Enrollment is optional, so we don't need to track success
     } catch (err) {
       console.error('Enroll/Buy failed', err);
     }
@@ -183,31 +163,7 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ onEnroll }) => {
     );
   }
 
-  if (!canAccessContent) {
-    return (
-      <div className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center px-4 py-16">
-        <div className="max-w-xl w-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8 space-y-6 text-center">
-          <div className="w-16 h-16 rounded-full bg-primary-50 dark:bg-primary-900/40 text-primary-600 dark:text-primary-300 flex items-center justify-center mx-auto">
-            <Lock size={26} />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{course.title}</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            {isAuthenticated
-              ? 'Enroll to unlock all course content and videos.'
-              : 'Please sign in and enroll to view this course.'}
-          </p>
-          <button
-            onClick={handleAccessClick}
-            className="w-full py-3 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors flex items-center justify-center gap-2"
-          >
-            {course.price === 0 ? 'Enroll Now' : 'Buy Now'}
-            <ArrowRight size={18} />
-          </button>
-          <p className="text-xs text-gray-400">Access granted after successful enrollment.</p>
-        </div>
-      </div>
-    );
-  }
+  // Removed access restriction - all courses are now free and accessible
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen pb-16 transition-colors duration-300">
@@ -267,11 +223,8 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ onEnroll }) => {
             
             {/* Video Placeholder (Desktop) */}
             <div
-              className={`hidden lg:block relative group ${canAccessContent ? 'cursor-pointer' : 'cursor-not-allowed opacity-75'}`}
-              onClick={() => {
-                if (!canAccessContent) return;
-                setIsPreviewOpen(true);
-              }}
+              className="hidden lg:block relative group cursor-pointer"
+              onClick={() => setIsPreviewOpen(true)}
             >
                 <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl border-4 border-white/10 relative">
                     <img src={course.image} alt={course.title} className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
@@ -282,7 +235,7 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ onEnroll }) => {
                     </div>
                     <div className="absolute bottom-4 left-4 right-4 text-center">
                         <span className="text-sm font-bold text-white shadow-black drop-shadow-md">
-                          {canAccessContent ? 'Preview Course' : 'Locked - Enroll to unlock'}
+                          Preview Course
                         </span>
                     </div>
                 </div>
@@ -296,60 +249,40 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ onEnroll }) => {
           
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Active Video Player */}
-            {canAccessContent ? (
-              <div id="course-video-player" className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-                  <div>
-                    <p className="text-xs uppercase tracking-wider text-primary-600 dark:text-primary-400 font-semibold">Now playing</p>
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white leading-tight">
-                      {activeVideo?.title || 'Course Preview'}
-                    </h2>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {activeVideo?.module ? `Module: ${activeVideo.module}` : 'Course preview lesson'}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setIsPreviewOpen(true)}
-                    className="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-primary-700 dark:text-primary-300 border border-primary-200 dark:border-primary-700 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/40 transition-colors"
-                  >
-                    <PlayCircle size={16} />
-                    Open full screen
-                  </button>
-                </div>
-                <div className="aspect-video bg-black rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-lg">
-                  <iframe
-                    key={getVideoSrc(activeVideo)}
-                    width="100%"
-                    height="100%"
-                    src={`${getVideoSrc(activeVideo)}?autoplay=1&rel=0`}
-                    title={activeVideo?.title || 'Course Video'}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full"
-                  ></iframe>
-                </div>
-              </div>
-            ) : (
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-200">
-                  <ShieldCheck size={24} />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">Unlock course videos</h3>
+            {/* Active Video Player - Always accessible */}
+            <div id="course-video-player" className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-primary-600 dark:text-primary-400 font-semibold">Now playing</p>
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white leading-tight">
+                    {activeVideo?.title || 'Course Preview'}
+                  </h2>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {isPaidCourse ? 'Buy the course to watch all lectures.' : 'Enroll to access all lectures.'}
+                    {activeVideo?.module ? `Module: ${activeVideo.module}` : 'Course preview lesson'}
                   </p>
                 </div>
                 <button
-                  onClick={handleAccessClick}
-                  className="px-4 py-2 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors"
+                  onClick={() => setIsPreviewOpen(true)}
+                  className="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-primary-700 dark:text-primary-300 border border-primary-200 dark:border-primary-700 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/40 transition-colors"
                 >
-                  {isPaidCourse ? 'Buy Now' : 'Enroll Now'}
+                  <PlayCircle size={16} />
+                  Open full screen
                 </button>
               </div>
-            )}
+              <div className="aspect-video bg-black rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-lg">
+                <iframe
+                  key={getVideoSrc(activeVideo)}
+                  width="100%"
+                  height="100%"
+                  src={`${getVideoSrc(activeVideo)}?autoplay=1&rel=0`}
+                  title={activeVideo?.title || 'Course Video'}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                ></iframe>
+              </div>
+            </div>
             
             {/* What you'll learn */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-700">
@@ -364,11 +297,6 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ onEnroll }) => {
                   </div>
                 )) || <p className="text-gray-500">Content details coming soon.</p>}
               </div>
-              {!canAccessContent && (
-                <div className="mt-4 text-sm text-primary-700 dark:text-primary-300 font-semibold">
-                  Enroll to unlock the detailed modules and videos.
-                </div>
-              )}
             </div>
 
             {/* Prerequisites */}
@@ -401,87 +329,68 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ onEnroll }) => {
                  </span>
               </div>
               
-              {canAccessContent ? (
-                <div className="space-y-3">
-                  {course.syllabus?.map((module, idx) => {
-                      const isOpen = openModuleIndex === idx;
-                      const lectures = getLecturesForModule(module);
-                      return (
-                          <div key={idx} className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden transition-all duration-300">
-                              <button 
-                                  onClick={() => toggleModule(idx)}
-                                  className={`w-full px-6 py-4 flex justify-between items-center text-left transition-colors ${isOpen ? 'bg-gray-50 dark:bg-gray-700/50' : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/30'}`}
-                              >
-                                  <div className="flex items-center gap-3">
-                                      <div className={`p-1 rounded transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
-                                          <ChevronDown size={18} className="text-gray-400" />
-                                      </div>
-                                      <span className="font-semibold text-gray-800 dark:text-gray-200">{module.title}</span>
-                                  </div>
-                                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                                    {(module.items?.length || module.lectures?.length || 0)} lectures
-                                  </span>
-                              </button>
-                              
-                              <div className={`transition-[max-height,opacity] duration-300 ease-in-out overflow-hidden ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-                                  <div className="p-6 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700">
-                                      <ul className="space-y-3">
-                                          {lectures.map((lecture, lIdx) => {
-                                            const isActive = activeVideo?.title === lecture.title && activeVideo?.module === module.title;
-                                            return (
-                                              <li
-                                                key={lIdx}
-                                                onClick={() => handleLectureSelect(module.title, lecture)}
-                                                className={`flex items-center justify-between text-sm group cursor-pointer px-2 py-2 rounded-lg transition-colors ${isActive ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-200' : 'text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-300 hover:bg-gray-50 dark:hover:bg-gray-700/40'}`}
-                                              >
-                                                <div className="flex items-center gap-3">
-                                                  <div className={`p-2 rounded-full ${isActive ? 'bg-primary-100 dark:bg-primary-800' : 'bg-gray-100 dark:bg-gray-700'}`}>
-                                                    <PlayCircle
-                                                      size={16}
-                                                      className={isActive ? 'text-primary-600 dark:text-primary-200' : 'text-gray-400 dark:text-gray-500 group-hover:text-primary-600 dark:group-hover:text-primary-300'}
-                                                    />
-                                                  </div>
-                                                  <div className="flex flex-col">
-                                                    <span className={`font-medium ${isActive ? 'text-primary-700 dark:text-primary-100' : ''}`}>{lecture.title}</span>
-                                                    {lecture.duration && (
-                                                      <span className="text-[11px] text-gray-400 dark:text-gray-500">
-                                                        {lecture.duration}
-                                                      </span>
-                                                    )}
-                                                  </div>
+              {/* Course content - Always accessible */}
+              <div className="space-y-3">
+                {course.syllabus?.map((module, idx) => {
+                    const isOpen = openModuleIndex === idx;
+                    const lectures = getLecturesForModule(module);
+                    return (
+                        <div key={idx} className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden transition-all duration-300">
+                            <button 
+                                onClick={() => toggleModule(idx)}
+                                className={`w-full px-6 py-4 flex justify-between items-center text-left transition-colors ${isOpen ? 'bg-gray-50 dark:bg-gray-700/50' : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/30'}`}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className={`p-1 rounded transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+                                        <ChevronDown size={18} className="text-gray-400" />
+                                    </div>
+                                    <span className="font-semibold text-gray-800 dark:text-gray-200">{module.title}</span>
+                                </div>
+                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                  {(module.items?.length || module.lectures?.length || 0)} lectures
+                                </span>
+                            </button>
+                            
+                            <div className={`transition-[max-height,opacity] duration-300 ease-in-out overflow-hidden ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                <div className="p-6 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700">
+                                    <ul className="space-y-3">
+                                        {lectures.map((lecture, lIdx) => {
+                                          const isActive = activeVideo?.title === lecture.title && activeVideo?.module === module.title;
+                                          return (
+                                            <li
+                                              key={lIdx}
+                                              onClick={() => handleLectureSelect(module.title, lecture)}
+                                              className={`flex items-center justify-between text-sm group cursor-pointer px-2 py-2 rounded-lg transition-colors ${isActive ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-200' : 'text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-300 hover:bg-gray-50 dark:hover:bg-gray-700/40'}`}
+                                            >
+                                              <div className="flex items-center gap-3">
+                                                <div className={`p-2 rounded-full ${isActive ? 'bg-primary-100 dark:bg-primary-800' : 'bg-gray-100 dark:bg-gray-700'}`}>
+                                                  <PlayCircle
+                                                    size={16}
+                                                    className={isActive ? 'text-primary-600 dark:text-primary-200' : 'text-gray-400 dark:text-gray-500 group-hover:text-primary-600 dark:group-hover:text-primary-300'}
+                                                  />
                                                 </div>
-                                                <span className={`text-xs ${isActive ? 'text-primary-600 dark:text-primary-200 font-semibold' : 'text-gray-400'}`}>
-                                                  {lecture.duration || '10:00'}
-                                                </span>
-                                              </li>
-                                            );
-                                          })}
-                                      </ul>
-                                  </div>
-                              </div>
-                          </div>
-                      );
-                  }) || <p className="text-gray-500">Syllabus details coming soon.</p>}
-                </div>
-              ) : (
-                <div className="flex flex-col items-start gap-3 p-6 border border-dashed border-gray-300 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-800/60">
-                  <div className="flex items-center gap-3">
-                    <ShieldCheck className="text-primary-600" size={20} />
-                    <span className="font-semibold text-gray-900 dark:text-white">Course content locked</span>
-                  </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {isPaidCourse
-                      ? 'Purchase this course to view all modules and lecture videos.'
-                      : 'Enroll for free to unlock the full syllabus and videos.'}
-                  </p>
-                  <button
-                    onClick={handleAccessClick}
-                    className="px-4 py-2 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors"
-                  >
-                    {isPaidCourse ? 'Buy Now' : 'Enroll Now'}
-                  </button>
-                </div>
-              )}
+                                                <div className="flex flex-col">
+                                                  <span className={`font-medium ${isActive ? 'text-primary-700 dark:text-primary-100' : ''}`}>{lecture.title}</span>
+                                                  {lecture.duration && (
+                                                    <span className="text-[11px] text-gray-400 dark:text-gray-500">
+                                                      {lecture.duration}
+                                                    </span>
+                                                  )}
+                                                </div>
+                                              </div>
+                                              <span className={`text-xs ${isActive ? 'text-primary-600 dark:text-primary-200 font-semibold' : 'text-gray-400'}`}>
+                                                {lecture.duration || '10:00'}
+                                              </span>
+                                            </li>
+                                          );
+                                        })}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                }) || <p className="text-gray-500">Syllabus details coming soon.</p>}
+              </div>
             </div>
 
             {/* Description */}
@@ -501,20 +410,12 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ onEnroll }) => {
                 {/* Mobile/Tablet Video Placeholder */}
                 <div 
                     className="lg:hidden aspect-video rounded-xl overflow-hidden shadow-lg relative mb-4 cursor-pointer" 
-                    onClick={() => {
-                      if (!canAccessContent) return;
-                      setIsPreviewOpen(true);
-                    }}
+                    onClick={() => setIsPreviewOpen(true)}
                 >
                     <img src={course.image} alt={course.title} className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                        <PlayCircle size={48} className={`text-white opacity-90 ${canAccessContent ? '' : 'opacity-40'}`} />
+                        <PlayCircle size={48} className="text-white opacity-90" />
                     </div>
-                    {!canAccessContent && (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-white text-sm font-semibold bg-black/60 px-3 py-1 rounded-lg">Enroll to unlock</span>
-                      </div>
-                    )}
                 </div>
 
                 {/* Enrollment Card */}
@@ -556,28 +457,14 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ onEnroll }) => {
 
                         <button
                             onClick={handleAccessClick}
-                            disabled={isEnrolled}
-                            className={`w-full py-4 text-white font-bold rounded-xl shadow-lg transition-all mb-4 flex items-center justify-center gap-2 group ${
-                              isEnrolled 
-                                ? 'bg-green-600 cursor-not-allowed' 
-                                : 'bg-primary-600 hover:bg-primary-700 hover:shadow-primary-500/30'
-                            }`}
+                            className="w-full py-4 text-white font-bold rounded-xl shadow-lg transition-all mb-4 flex items-center justify-center gap-2 group bg-primary-600 hover:bg-primary-700 hover:shadow-primary-500/30"
                         >
-                            {isEnrolled ? (
-                              <>
-                                <CheckCircle size={18} />
-                                Enrolled
-                              </>
-                            ) : (
-                              <>
-                                {pricingPlan === 'subscription'
-                                  ? 'Start Free Trial'
-                                  : course.price === 0
-                                  ? 'Enroll Now'
-                                  : 'Buy Now'}
-                                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                              </>
-                            )}
+                            {pricingPlan === 'subscription'
+                              ? 'Start Free Trial'
+                              : course.price === 0
+                              ? 'Enroll Now (Optional)'
+                              : 'Buy Now'}
+                            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                         </button>
                         
                         <p className="text-center text-[10px] text-gray-400 mb-6">30-Day Money-Back Guarantee</p>

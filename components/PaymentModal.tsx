@@ -37,19 +37,21 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, cou
     setError(null);
     
     try {
-      // For free courses, just enroll directly
+      // For free courses, just enroll directly (or return success if already enrolled)
       if (course.price === 0) {
         const enrollmentResult = await createEnrollment({
           courseId: parseInt(course.id),
           paymentMethod: 'one-time',
         });
         
-        if (enrollmentResult.error) {
+        // For free courses, enrollment is optional - treat "already enrolled" as success
+        if (enrollmentResult.error && enrollmentResult.error !== 'Already enrolled in this course') {
           setStep('error');
           setError(enrollmentResult.error);
           return;
         }
         
+        // Success (either enrolled or already enrolled)
         setStep('success');
         setTimeout(() => {
           onSuccess();

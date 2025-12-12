@@ -25,6 +25,13 @@ const AppContent: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
   const handleEnroll = (course: Course) => {
+    // For free courses, enrollment is optional - skip if not authenticated
+    if (course.price === 0 && !isAuthenticated) {
+      // Videos are accessible without enrollment, so just return success
+      return { success: true };
+    }
+
+    // For paid courses or authenticated users, proceed with enrollment
     if (!isAuthenticated) {
       setIsAuthModalOpen(true);
       return { success: false };
