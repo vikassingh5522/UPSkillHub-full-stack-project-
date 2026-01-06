@@ -55,17 +55,6 @@ export interface ServiceItem {
   icon: string;
 }
 
-export interface BlogPost {
-  id: string;
-  title: string;
-  excerpt: string;
-  date: string;
-  author: string;
-  image: string;
-  category: string;
-  link: string;
-}
-
 export interface ChatMessage {
   role: "user" | "model";
   text: string;

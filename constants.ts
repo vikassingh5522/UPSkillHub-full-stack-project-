@@ -1,4 +1,4 @@
-import { Course, ServiceItem, BlogPost } from './types';
+import { Course, ServiceItem } from './types';
 
 export const COURSES: Course[] = [
   {
@@ -976,45 +976,3 @@ export const SERVICES: ServiceItem[] = [
     }
 ];
 
-export const BLOG_POSTS: BlogPost[] = [
-    {
-        id: '1',
-        title: 'Top 10 Tech Skills to Master in 2025',
-        excerpt: 'The tech landscape is evolving rapidly. Here are the most in-demand skills you need to stay competitive in the job market.',
-        date: 'March 15, 2025',
-        author: 'Alex Johnson',
-        image: 'https://images.unsplash.com/photo-1504384308090-c54be3855833?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        category: 'Career',
-        link: 'https://roadmap.sh'
-    },
-    {
-        id: '2',
-        title: 'The Future of AI in Software Development',
-        excerpt: 'How generative AI is changing the way we write code, debug applications, and architect systems.',
-        date: 'March 10, 2025',
-        author: 'Dr. Emily Chen',
-        image: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        category: 'AI',
-        link: 'https://openai.com/blog'
-    },
-    {
-        id: '3',
-        title: 'Breaking into Cybersecurity: A Beginner\'s Guide',
-        excerpt: 'Interested in a career in cybersecurity? Learn about the different roles, certifications, and skills required to get started.',
-        date: 'March 5, 2025',
-        author: 'Michael Smith',
-        image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        category: 'Cybersecurity',
-        link: 'https://www.cisa.gov/cybersecurity-training-exercises'
-    },
-    {
-        id: '4',
-        title: 'Why Soft Skills Matter for Developers',
-        excerpt: 'Technical skills get you the interview, but soft skills get you the job. Learn how to improve your communication and teamwork.',
-        date: 'February 28, 2025',
-        author: 'Sarah Jenkins',
-        image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        category: 'Soft Skills',
-        link: 'https://www.mindtools.com'
-    }
-];

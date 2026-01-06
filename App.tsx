@@ -7,7 +7,6 @@ import { Skills } from './pages/Skills';
 import { Services } from './pages/Services';
 import { About } from './pages/About';
 import { Resources } from './pages/Resources';
-import { Blog } from './pages/Blog';
 import { Contact } from './pages/Contact';
 import { CourseDetail } from './pages/CourseDetail';
 import { AuthModal } from './components/AuthModal';
@@ -67,7 +66,6 @@ const AppContent: React.FC = () => {
             <Route path="/services" element={<Services />} />
             <Route path="/about" element={<About />} />
             <Route path="/resources" element={<Resources />} />
-            <Route path="/blog" element={<Blog />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
